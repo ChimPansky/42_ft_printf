@@ -1,0 +1,6 @@
+#include "../include/ft_printf.h"
+
+int	convert_c(char c);
+int	convert_s(char *s, char *flags);
+int	convert_d...
+// all the convert_ functions write to standard output and return number of bytes wrote to the caller function ft_printf...
