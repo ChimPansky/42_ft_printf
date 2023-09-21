@@ -25,10 +25,10 @@ enum e_flags
 };
 
 //int	ft_printf(const char *, ...);
-char	*convert_c(int c);
-char	*convert_s(char *s);
-char	*convert_p(void *p);
-char	*convert_d(int	i);
+int	convert_c(int c);
+int	convert_s(char *s);
+int	convert_p(void *p);
+int	convert_d(int	i);
 int	convert_i(int	i, char *format);
 int	convert_u(unsigned int i, char *format);
 int	convert_x(unsigned int i, char *format);
