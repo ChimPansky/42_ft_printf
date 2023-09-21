@@ -3,9 +3,9 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 SOURCE_PATH = src/
 INCLUDE_PATH = include/
-LIBFT_PATH = libft/
+LIBFT_DIR = libft/
+LIBFT_FILE = libft.a
 HEADER = $(INCLUDE_PATH)ft_printf.h
-LIBFT_NAME = $(LIBFT_PATH)libft.a
 
 
 SRC = $(SOURCE_PATH)ft_printf.c $(SOURCE_PATH)ft_conversions.c
@@ -16,15 +16,14 @@ OBJ = $(SRC:.c=.o)
 
 #OBJ_BONUS = $(SRC_BONUS:.c=.o)
 
-$(NAME): $(LIBFT_NAME) $(OBJ) $(HEADER)
+$(NAME): $(LIBFT_FILE) $(OBJ) $(HEADER)
 	ar -rs $(NAME) $(OBJ)
 
-all: $(NAME) $(LIBFT_NAME)
+all: $(NAME) $(LIBFT_FILE)
 
-$(LIBFT_NAME):
-	cd $(LIBFT_PATH)
-	make
-	cd ..
+$(LIBFT_FILE):
+	make -C $(LIBFT_DIR)
+	cp -r $(LIBFT_DIR)$(LIBFT_FILE) ./$(LIBFT_FILE)
 
 #%.o : %.c $(HEADER)
 #	$(CC) $(CFLAGS) -c $< -o $@
@@ -37,7 +36,7 @@ clean:
 #$(OBJ_BONUS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(LIBFT_FILE)
 
 re: fclean all
 
