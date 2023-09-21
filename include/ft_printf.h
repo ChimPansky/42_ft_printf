@@ -4,9 +4,27 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdarg.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
+# include <stdio.h>		// remove this before Evaluations...
 
-int	ft_printf(const char *, ...);
+typedef struct s_format
+{
+	int	flags;
+	int	min_width;
+	int precision;
+} 			t_format;
+
+enum e_flags
+{
+	F_HASH = 1,
+	F_ZERO = 2,
+	F_MINUS = 4,
+	F_SPACE = 8,
+	F_PLUS = 16,
+	F_DOT = 32
+};
+
+//int	ft_printf(const char *, ...);
 int	convert_c(int c, char *format);
 int	convert_s(char *s, char *format);
 int	convert_p(void *p, char *format);
