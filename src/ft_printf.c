@@ -1,23 +1,24 @@
 #include "../include/ft_printf.h"
 #include "../libft/libft.h"
-/*
-int	convert_c(int c)
-{
-	ft_putchar_fd(c, 1);
-	return (1);
-}
-int	convert_s(char *s)
-{
-	ft_putstr_fd(s, 1);
-	return (ft_strlen(s));
-}
-*/
+
 int	get_conversion(char c, va_list arguments)
 {
 	if (c == 'c')
 		return (convert_c(va_arg(arguments, int)));
 	if (c == 's')
 		return (convert_s(va_arg(arguments, char *)));
+	if (ft_strchr("dixX", c))
+		return (convert_base(c, va_arg(arguments, int)));
+	if (ft_strchr("u", c))
+		return (convert_unsigned_base(c, va_arg(arguments, size_t)));
+	if (c == 'p')
+		return (convert_p(va_arg(arguments, void *)));
+
+	/*if (c == 'u')
+		return (convert_u(va_arg(arguments, char *)));
+	if (c == 'p')
+		return (convert_p(va_arg(arguments, char *)));
+	*/
 	return (0);
 }
 
@@ -46,8 +47,11 @@ int	ft_printf(const char *format, ...)
 			}
 			else if (*(format + 1) == '\0' )
 				invalid_format = 1;
-			else if (ft_strchr("cspdiuxX", *format))
-				written += get_conversion(*format, arguments);
+			else if (ft_strchr("cspdiuxX", *(format + 1)))
+			{
+				written += get_conversion(*(format + 1), arguments);
+				format++;
+			}
 		}
 		else
 		{
@@ -103,19 +107,30 @@ int	main(void)
 
 	ft_putstr_fd("ft_putstr_test\n#############################\n\n", 1);
 
-	char	*str = "%%%bcdef";
+
 	char	*str1 = "!!!!!!";
+	int		testnr;
+	size_t	testu;
+	int		testx;
 	int		ft_printed;
 	int		printed;
+	char	*str = "testptr: %p\n";
 
-	ft_printed = ft_printf(str);
+	testnr = 5324;
+	testu = 2147483648;
+	testx = 235325;
+
+	char *asd = 1;
+
+	ft_printed = ft_printf(str, &str);
 	printf("\nft_printed: %d", ft_printed);
 
 	printf("\n\n\n\n");
 
-	printed = printf(str);
-	printf("\nprinted: %d", printed);
+	printed = printf(str, &str);
+	printf("\nprinted: %d\n\n", printed);
 
+	//ft_putnbr_base_fd(1, 45, "0123456789abcdef");
 
 	return (0);
 }
