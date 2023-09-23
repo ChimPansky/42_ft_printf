@@ -1,70 +1,99 @@
-//#include "../include/ft_printf.h"
-#include "ft_printf.h"
-//#include "../libft/libft.h"
+#include "../include/ft_printf.h"
+
+int check_buf()
 
 static int	get_conversion(char c, va_list arguments)
 {
 	if (c == 'c')
-		return (convert_c(va_arg(arguments, int)));
+		return (ft_putchar_fd(c, 1));
 	if (c == 's')
 		return (convert_s(va_arg(arguments, char *)));
-	if (ft_strchr("dixX", c))
-		return (convert_base(c, va_arg(arguments, int)));
-	if (ft_strchr("u", c))
-		return (convert_unsigned_base(c, va_arg(arguments, size_t)));
+	if (c == 'i' || c == 'd')
+		return (ft_putnbr_base_fd(1, va_arg(arguments, int), "0123456789"));
+	if (c == 'X')
+		return (ft_putnbr_base_fd(1, va_arg(arguments, unsigned), "0123456789ABCDEF"));
+	if (c == 'x')
+		return (ft_putnbr_base_fd(1, va_arg(arguments, unsigned), "0123456789abcdef"));
+	if (c == 'b')
+		return (ft_putnbr_base_fd(1, va_arg(arguments, unsigned), "01"));
+	if (c == 'o')
+		return (ft_putnbr_base_fd(1, va_arg(arguments, unsigned), "01234567"));
+	if (c == 'u')
+		return (ft_putunsigned_base_fd(1, va_arg(arguments, unsigned), "0123456789"));
 	if (c == 'p')
 		return (convert_p(va_arg(arguments, void *)));
 	return (0);
 }
 
-static int	iterate_format(const char *format, va_list arguments)
+int accumulate_size(ssize_t bytes_written)
 {
-	int	written;
-	int		invalid_format;
+	static int sz = 0;
 
-	written = 0;
-	invalid_format = 0;
-	while (*format)
+	if (bytes_written < 0)
+		sz = -1;
+	if (sz >= 0)
+		sz += bytes_written;
+	return sz;
+}
+
+void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
+{
+	const char* next = ft_strchr_or_eol(*format, '%');
+	const char* flags_string = FLAGS_STRING;
+	int flags = 0;
+	int width;
+
+	if (next - 1 > *format)
+		accumulate_size(write(fd, *format, next - 1 - *format));
+	*format = next;
+	if (**format == '\0')
+		return ;
+	*format += 1;
+	// flags
+	next = ft_strchr(flags_string, **format);
+	while (next)
 	{
-		if (*format == '%')
-		{
-			if (*(format + 1) == '%')
-			{
-				ft_putchar_fd('%', 1);
-				written++;
-				format++;
-			}
-			else if (*(format + 1) == '\0' )
-				invalid_format = 1;
-			else if (ft_strchr("cspdiuxX", *(format + 1)))
-			{
-				written += get_conversion(*(format + 1), arguments);
-				format++;
-			}
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			written++;
-		}
-		format++;
+		flags |= (1 >> (next - flags_string));
+		*format += 1;
+		next = ft_strchr(flags_string, **format);
 	}
-	if (invalid_format)
+	// width
+	width = ft_atoi_shift(format);
+
+	while (next)
+	{
+		flags |= (1 >> (next - flags_string));
+		*format += 1;
+		next = ft_strchr(flags_string, **format);
+	}
+
+}
+
+
+int	ft_printf_fd(int fd, const char *format, ...)
+{
+	va_list	arguments;
+	t_buffer buf;
+
+	buf.str = malloc(BUFFER_SIZE * sizeof(char));
+	if (!buf.str)
 		return (-1);
-	return (written);
+	buf.capacity = BUFFER_SIZE;
+	buf.sz = 0;
+	va_start(arguments, format);
+	while (*format)
+		write_next(fd, &buf, &format, arguments);
+	va_end(arguments);
+	return (accumulate_size(0));
 }
 
 int	ft_printf(const char *format, ...)
 {
 	va_list	arguments;
-	int	bytes_written;
 
-	bytes_written = 0;
-	va_start(arguments, format);
-	bytes_written = iterate_format(format, arguments);
-	va_end(arguments);
-	return (bytes_written);
+	return ft_printf_fd(1, format, arguments);
 }
+
 /*
 int	main(void)
 {

@@ -15,6 +15,7 @@ typedef struct s_format
 	int precision;
 } 			t_format;
 
+#define FLAGS_STRING "#0- +"
 enum e_flags
 {
 	F_HASH = 1,
@@ -22,7 +23,6 @@ enum e_flags
 	F_MINUS = 4,
 	F_SPACE = 8,
 	F_PLUS = 16,
-	F_DOT = 32
 };
 
 int	ft_printf(const char *, ...);

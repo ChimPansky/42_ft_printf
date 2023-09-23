@@ -1,6 +1,6 @@
-//#include "../include/ft_printf.h"
 #include "ft_printf.h"
-ssize_t	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str)
+
+char*	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str)
 {
 	ssize_t	sz;
     const   size_t base = ft_strlen(base_str);
@@ -18,7 +18,7 @@ ssize_t	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str)
 	return (sz);
 }
 
-ssize_t	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str)
+char*	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str)
 {
 	ssize_t	sz;
     const   size_t base = ft_strlen(base_str);
@@ -36,7 +36,7 @@ ssize_t	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str)
 	return (sz);
 }
 
-ssize_t	ft_putnbr_base_fd(int fd, int nbr, char* base_str)
+char*	ft_putnbr_base_fd(int fd, int nbr, char* base_str)
 {
 	if (nbr >= 0)
 		return (ft_putunsigned_base_fd(fd, nbr, base_str));
