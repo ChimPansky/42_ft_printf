@@ -8,13 +8,6 @@
 # include <stdarg.h>
 # include <stdio.h>		// remove this before Evaluations...
 
-typedef struct s_format
-{
-	int	flags;
-	int	min_width;
-	int precision;
-} 			t_format;
-
 #define FLAGS_STRING "#0- +"
 enum e_flags
 {
@@ -23,7 +16,31 @@ enum e_flags
 	F_MINUS = 4,
 	F_SPACE = 8,
 	F_PLUS = 16,
+	F_PRESISION = 32,
+	F_MIN_WIDTH = 64,
 };
+
+enum e_length_modifier
+{
+	L_NULL,
+	L_h,
+	L_hh,
+	L_l,
+	L_ll,
+	L_z,
+	L_j,
+	L_t,
+	L_L,
+};
+
+typedef struct s_format
+{
+	int	flags;
+	int	min_width;
+	int precision;
+	enum e_length_modifier length_modifier;
+	long long nbr;
+} 			t_format;
 
 int	ft_printf(const char *, ...);
 ssize_t	ft_putnbr_base_fd(int fd, int nbr, char* base_str);
