@@ -1,15 +1,17 @@
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-//# include "../libft/libft.h"
 # include "libft.h"
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdint.h>
+# include <stddef.h>
 # include <stdarg.h>
-# include <stdio.h>		// remove this before Evaluations...
 
+// accumulate_size_defines
 #define GET_SIZE_AND_RESET -2
 #define WRITE_ERROR -1
+
 #define FLAGS_STRING "#0- +"
 enum e_flags
 {
@@ -54,13 +56,5 @@ typedef struct s_format
 } 			t_format;
 
 int	ft_printf(const char *, ...);
-ssize_t	ft_putnbr_base_fd(int fd, int nbr, char* base_str);
-ssize_t	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str);
-ssize_t	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str);
-int	convert_c(int c);
-int	convert_s(char *s);
-int	convert_base(char c, int nbr);
-int	convert_unsigned_base(char c, size_t nbr);
-int	convert_p(void *p);
 
-#endif
+#endif  // FT_PRINTF_H

@@ -3,10 +3,10 @@
 int accumulate_size(ssize_t bytes_written)
 {
 	static ssize_t sz = 0;
-	const ssize_t ret;
+	const ssize_t ret = sz;
 
 	if (bytes_written == WRITE_ERROR)
-		sz = -1;
+		sz = WRITE_ERROR;
 	else if (bytes_written == GET_SIZE_AND_RESET)
 	{
 		sz = 0;
