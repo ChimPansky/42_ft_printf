@@ -2,14 +2,16 @@
 
 int accumulate_size(ssize_t bytes_written)
 {
-	static int sz = 0;
+	static ssize_t sz = 0;
+	const ssize_t ret;
 
-	if (bytes_written == ERROR_ACCUMULATED_SIZE)
+	if (bytes_written == WRITE_ERROR)
 		sz = -1;
-	else if (bytes_written == RESET_ACCUMULATED_SIZE)
+	else if (bytes_written == GET_SIZE_AND_RESET)
+	{
 		sz = 0;
-	else if (bytes_written == GET_ACCUMULATED_SIZE)
-		return (sz);
+		return (ret);
+	}
 	else if (sz >= 0)
 		sz += bytes_written;
 	return sz;
@@ -75,6 +77,7 @@ void	parse_lenghth_modifier(const char **format, t_format *format_description)
 		format_description->length_modifier = L_j;
 	else if (ft_strncmp(*format, "t", 1) == 0)
 		format_description->length_modifier = L_t;
+	// add not implemented for L ?
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
 	if (ft_strchr("hlzjt", **format))
@@ -197,6 +200,7 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 		write_withflags(fd, format_description, str);
 		free(str);
 	}
+	// add unimplemented for unsupported flags?
 	if (ft_strchr("%pouxXsc", **format))
 		*format += 1;
 }
@@ -225,17 +229,11 @@ int	ft_printf_fd(int fd, const char *format, ...)
 {
 	va_list	arguments;
 	t_buffer buf;
-
-	buf.str = malloc(BUFFER_SIZE * sizeof(char));
-	if (!buf.str)
-		return (-1);
-	buf.capacity = BUFFER_SIZE;
-	buf.sz = 0;
 	va_start(arguments, format);
 	while (*format)
 		write_next(fd, &buf, &format, arguments);
 	va_end(arguments);
-	return (accumulate_size(0));
+	return (accumulate_size(GET_SIZE_AND_RESET));
 }
 
 int	ft_printf(const char *format, ...)

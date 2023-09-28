@@ -8,11 +8,9 @@
 # include <stdarg.h>
 # include <stdio.h>		// remove this before Evaluations...
 
+#define GET_SIZE_AND_RESET -2
+#define WRITE_ERROR -1
 #define FLAGS_STRING "#0- +"
-#define GET_ACCUMULATED_SIZE -3
-#define RESET_ACCUMULATED_SIZE -2
-#define ERROR_ACCUMULATED_SIZE -1
-
 enum e_flags
 {
 	F_HASH = 1,
