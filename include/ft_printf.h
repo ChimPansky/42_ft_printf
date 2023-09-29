@@ -53,6 +53,7 @@ typedef struct s_format
 	int	min_width;
 	int precision;
 	enum e_length_modifier length_modifier;
+	int format_incorrect;
 } 			t_format;
 
 int	ft_printf(const char *, ...);

@@ -36,6 +36,11 @@ void	parse_flags(const char **format, t_format *format_description, va_list argu
 	if (!format_description->min_width && **format == '*')
 	{
 		format_description->min_width = va_arg(arguments, int);
+		if (format_description->min_width < 0)
+		{
+			format_description->min_width = -format_description->min_width; // MIN_INT?
+			format_description->flags |= F_MINUS;
+		}
 		*format += 1;
 	}
 	if (format_description->min_width)
@@ -47,17 +52,18 @@ void	parse_precision(const char **format, t_format *format_description, va_list 
 	if (**format != '.')
 		return ;
 	*format += 1;
-	// behaviour for "%.d" ?
+	format_description->flags |= F_PRESISION;
 	if (!ft_strchr("0123456789*", **format))
-		return ;
-	if (**format == '*')
+		format_description->precision = 0;
+	else if (**format == '*')
 	{
 		format_description->precision = va_arg(arguments, int);
+		if (format_description->precision < 0)
+			format_description->flags &= ~F_PRESISION;
 		*format += 1;
 	}
 	else
 		format_description->precision = ft_atoi_shift(format);
-	format_description->flags |= F_PRESISION;
 }
 
 
@@ -207,15 +213,16 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 
 void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
 {
-	const char* next = ft_strchr_or_eol(*format, '%');
+	const char *percent = ft_strchr_or_eol(*format, '%');
 	t_format	format_description;
 
 	format_description.flags = 0;
 	format_description.length_modifier = L_NULL;
-
-	if (next - 1 > *format)
-		accumulate_size(write(fd, *format, next - 1 - *format));
-	*format = next;
+	// the moment we see incorrect format, set the flag to true and left format pointing at incorrect sym.
+	format_description.format_incorrect = 0;
+	if (percent > *format)
+		accumulate_size(write(fd, *format, percent - *format));
+	*format = percent;
 	if (**format == '\0')
 		return ;
 	*format += 1;
@@ -223,6 +230,10 @@ void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
 	parse_precision(format, &format_description, arguments);
 	parse_lenghth_modifier(format, &format_description);
 	parse_format_and_write(fd, format, &format_description, arguments);
+	// if incorrect, write the format line before incorrect symb.
+	// incorrect symb will be produced on the next call of write_next
+	if (format_description.format_incorrect)
+		accumulate_size(write(fd, percent, *format - percent));
 }
 
 int	ft_printf_fd(int fd, const char *format, ...)
