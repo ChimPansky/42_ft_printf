@@ -42,7 +42,7 @@ enum e_length_modifier
 	L_l,
 	L_ll,
 	L_z,
-	L_j,
+	L_j,q
 	L_t,
 	L_L,
 };

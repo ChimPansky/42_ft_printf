@@ -228,7 +228,7 @@ void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
 int	ft_printf_fd(int fd, const char *format, ...)
 {
 	va_list	arguments;
-	t_buffer buf;
+	t_buffer buf;	// t_buffer?
 	va_start(arguments, format);
 	while (*format)
 		write_next(fd, &buf, &format, arguments);
