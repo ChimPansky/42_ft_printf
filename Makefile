@@ -18,7 +18,7 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-SRC_FILES = ft_printf.c ft_conversions.c puthex_fd.c
+SRC_FILES = ft_printf.c #ft_conversions.c puthex_fd.c
 
 SRC = $(addprefix $(SOURCE_DIR),$(SRC_FILES))
 
