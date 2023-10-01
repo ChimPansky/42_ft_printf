@@ -69,7 +69,6 @@ void	parse_precision(const char **format, t_format *format_description, va_list 
 		format_description->precision = ft_atoi_shift(format);
 }
 
-
 void	parse_lenghth_modifier(const char **format, t_format *format_description)
 {
 	if (ft_strncmp(*format, "hh", 2) == 0)
@@ -86,7 +85,7 @@ void	parse_lenghth_modifier(const char **format, t_format *format_description)
 		format_description->length_modifier = L_j;
 	else if (ft_strncmp(*format, "t", 1) == 0)
 		format_description->length_modifier = L_t;
-	else if (ft_strncmp(*format, "t", 1) == 0)
+	else if (ft_strncmp(*format, "L", 1) == 0)
 		format_description->length_modifier = L_L;
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
