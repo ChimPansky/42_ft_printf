@@ -1,5 +1,16 @@
 #include "ft_printf.h"
 
+int get_settings(const char **format, t_format *settings)
+{
+	index = ft_strchr(s_flags, *form);////////////////////////
+	while (index && *form)
+	{
+		form++;
+		printf("%s\n", index);
+		index = ft_strchr(s_flags, *form);
+	}
+}
+
 int	print_conversion(int fd, const char **format, va_list args)
 {
 	size_t len;
@@ -9,6 +20,12 @@ int	print_conversion(int fd, const char **format, va_list args)
 	if (**format == 's')
 	{
 		s = va_arg(args, char *);
+		len = ft_strlen(s);
+		write(fd, s, len);
+	}
+	if (**format == 'd')
+	{
+		s = ft_itoa(va_arg(args, int));
 		len = ft_strlen(s);
 		write(fd, s, len);
 	}
@@ -35,6 +52,8 @@ int	print_regular(int fd, const char **format)
 
 void	write_part(int fd, int *printed, const char **format, va_list args)
 {
+	t_format settings;
+
 	if (**format == '%')
 	{
 		(*format)++;
@@ -47,27 +66,33 @@ void	write_part(int fd, int *printed, const char **format, va_list args)
 			(*printed)++;
 		}
 		else
-			*printed += print_conversion(fd, format, args);
+		{
+			if (get_settings(format, &settings))
+				*printed += print_conversion(fd, format, settings, args);
+		}
 	}
 	else
 		*printed += print_regular(fd, format);
 }
 
-int	ft_printf_fd(int fd, const char *format, ...)
+int	ft_printf_fd(int fd, const char *format, va_list args)
 {
 	int	printed;
-	va_list args;
 
 	printed = 0;
-	va_start(args, format);
+
 	while (*format)
 		write_part(fd, &printed, &format, args);
-	va_end(args);
 	return (printed);
 }
 
 int	ft_printf(const char *format, ...)
 {
+	int printed;
 	va_list args;
-	return ft_printf_fd(1, format, args);
+
+	va_start(args, format);
+	printed = ft_printf_fd(1, format, args);
+	va_end(args);
+	return (printed);
 }

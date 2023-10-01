@@ -7,6 +7,7 @@
 # include <stdarg.h>
 //# include <stdint.h>
 //# include <stddef.h>
+# include <stdio.h>  // REMOVE THIS
 
 
 
@@ -15,7 +16,7 @@
 //# define WRITE_ERROR -1
 
 
-# define FLAGS_STRING "#0- +"
+# define S_FLAGS "#0- +"
 enum e_flags
 {
 	F_HASH = 1,
