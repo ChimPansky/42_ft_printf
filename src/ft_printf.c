@@ -1,3 +1,4 @@
+#include "../include/libft.h"
 #include "../include/ft_printf.h"
 
 int accumulate_size(ssize_t bytes_written)
@@ -17,7 +18,7 @@ int accumulate_size(ssize_t bytes_written)
 	return sz;
 }
 
-void	parse_flags(const char **format, t_format *format_description, va_list arguments)
+void	parse_flags(const char **format, t_format *format_description, va_list ap)
 {
 	const char* flags_string = FLAGS_STRING;
 	const char* next = ft_strchr(flags_string, **format);
@@ -35,7 +36,7 @@ void	parse_flags(const char **format, t_format *format_description, va_list argu
 	format_description->min_width = ft_atoi_shift(format);
 	if (!format_description->min_width && **format == '*')
 	{
-		format_description->min_width = va_arg(arguments, int);
+		format_description->min_width = va_arg(ap, int);
 		if (format_description->min_width < 0)
 		{
 			format_description->min_width = -format_description->min_width; // MIN_INT?
@@ -47,7 +48,7 @@ void	parse_flags(const char **format, t_format *format_description, va_list argu
 		format_description->flags |= F_MIN_WIDTH;
 }
 
-void	parse_precision(const char **format, t_format *format_description, va_list arguments)
+void	parse_precision(const char **format, t_format *format_description, va_list ap)
 {
 	if (**format != '.')
 		return ;
@@ -57,7 +58,7 @@ void	parse_precision(const char **format, t_format *format_description, va_list 
 		format_description->precision = 0;
 	else if (**format == '*')
 	{
-		format_description->precision = va_arg(arguments, int);
+		format_description->precision = va_arg(ap, int);
 		if (format_description->precision < 0)
 			format_description->flags &= ~F_PRESISION;
 		*format += 1;
@@ -83,10 +84,11 @@ void	parse_lenghth_modifier(const char **format, t_format *format_description)
 		format_description->length_modifier = L_j;
 	else if (ft_strncmp(*format, "t", 1) == 0)
 		format_description->length_modifier = L_t;
-	// add not implemented for L ?
+	else if (ft_strncmp(*format, "t", 1) == 0)
+		format_description->length_modifier = L_L;
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
-	if (ft_strchr("hlzjt", **format))
+	if (ft_strchr("hlzjtL", **format))
 		*format += 1;
 }
 
@@ -104,47 +106,87 @@ void write_padding(int fd, int sz, char c)
 		accumulate_size(write(fd, buf, sz));
 }
 
-intmax_t get_signed(enum e_length_modifier len, va_list arguments)
+intmax_t get_signed(enum e_length_modifier len, va_list ap)
 {
-	if (len == L_NULL)
-		return va_arg(arguments, int);
 	if (len == L_h)
-		return (short)va_arg(arguments, int);
+		return (short)va_arg(ap, int);
 	if (len == L_hh)
-		return (char)va_arg(arguments, int);
+		return (char)va_arg(ap, int);
 	if (len == L_l)
-		return va_arg(arguments, long);
+		return va_arg(ap, long);
 	if (len == L_ll)
-		return va_arg(arguments, long long);
+		return va_arg(ap, long long);
 	if (len == L_z)
-		return va_arg(arguments, size_t);
+		return va_arg(ap, size_t);
 	if (len == L_j)
-		return va_arg(arguments, intmax_t);
+		return va_arg(ap, intmax_t);
 	if (len == L_t)
-		return va_arg(arguments, ptrdiff_t);
+		return va_arg(ap, ptrdiff_t);
+	// if (len == L_NULL)
+	return va_arg(ap, int);
 }
 
-uintmax_t get_unsigned(enum e_length_modifier len, va_list arguments)
+uintmax_t get_unsigned(enum e_length_modifier len, va_list ap)
 {
-	if (len == L_NULL)
-		return (unsigned)va_arg(arguments, unsigned);
 	if (len == L_h)
-		return (unsigned short)va_arg(arguments, unsigned int);
+		return (unsigned short)va_arg(ap, unsigned int);
 	if (len == L_hh)
-		return (unsigned char)va_arg(arguments, unsigned int);
+		return (unsigned char)va_arg(ap, unsigned int);
 	if (len == L_l)
-		return (unsigned long)va_arg(arguments, unsigned long);
+		return (unsigned long)va_arg(ap, unsigned long);
 	if (len == L_ll)
-		return (unsigned long long)va_arg(arguments, unsigned long long);
+		return (unsigned long long)va_arg(ap, unsigned long long);
 	if (len == L_z)
-		return (size_t)va_arg(arguments, size_t);
+		return (size_t)va_arg(ap, size_t);
 	if (len == L_j)
-		return va_arg(arguments, uintmax_t);
+		return va_arg(ap, uintmax_t);
 	if (len == L_t)
-		return va_arg(arguments, ptrdiff_t);
+		return va_arg(ap, ptrdiff_t);
+	// if (len == L_NULL)
+	return (unsigned)va_arg(ap, unsigned);
 }
 
-void	parse_format_and_write(int fd, const char **format, t_format *format_description, va_list arguments)
+// integers: precision determines minimum num of caracters, ignores F_ZERO, override minwidth if greater, no output for zero if prec = 0
+void write_signed(int fd, t_format *format_description, intmax_t nb)
+{
+	// t_sized_string *str = lltoa_base(a, "0123456789");
+	// free(str);
+	accumulate_size(ft_putnbr_fd((int)nb, fd));
+}
+
+	// F_SPACE, F_PLUS are ignored
+	// o	unsigned int in octal. F_HASH prepends "0" string to a nonzero result (reduce padding by one)
+	// u	Print decimal unsigned int.
+	// x, X	unsigned int as a hexadecimal number. x uses lower-case letters and X uses upper-case.
+	// F_HASH For x and X conversions, a nonzero result has the string "0x" (or "0X" for X conversions) prepended to it (reduce padding by two)
+	// p	pointer. same as %#zx
+void write_unsigned(int fd, t_format *format_description, uintmax_t nb, char f)
+{
+	const char *base;
+	if (f == 'o')
+		base = "01234567";
+	else if (f == 'x' || f == 'p')
+		base = "0123456789abcdef";
+	else if (f == 'X')
+		base = "0123456789abcdef";
+	// t_sized_string *str = ulltoa_base(b, base);
+	// free(str);
+	accumulate_size(ft_putnbr_fd((int)nb, fd));
+}
+
+// minwidth only, the rest is ignored
+void write_char(int fd, t_format *format_description, unsigned char c)
+{
+	accumulate_size(ft_putchar_fd(c, fd));
+}
+
+// minwidth and precision only, the rest is ignored, precision determine maxlen
+void write_string(int fd, t_format *format_description, char *str)
+{
+	accumulate_size(ft_putstr_fd(str, fd));
+}
+
+void	parse_format_and_write(int fd, const char **format, t_format *format_description, va_list ap)
 {
     //    F_ZERO      The value should be zero padded.  For d, i, o, u, x, X the converted value is padded on the  left  with zeros rather than blanks.
 	// If the 0 and - flags both appear, the 0 flag is ignored.  If a precision is given with a numeric conversion (d, i, o, u, x, and X), the 0 flag is ignored.
@@ -155,37 +197,21 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
     //           A + overrides a space if both are used.
 
 	// %	Prints a literal % character (this type doesn't accept any flags, width, precision, length fields).
+	// all flags and length modifiers are ignored, no error
 	if (**format == '%')
-	{
-		// all flags and length modifiers are ignored, no error
 		accumulate_size(write(fd, *format, 1));
-	}
-	// c	char (character).
+	// c	char (character)
 	else if (**format == 'c')
-	{
-		// minwidth only, the rest is ignored
-	}
+		write_char(fd, format_description, (unsigned char)va_arg(ap, int));
 	// s	null-terminated string (or precision-length string if prec is determined)
-	else if (**format == 's')
-	{
-		// minwidth and precision only, the rest is ignored, precision determine maxlen
+	else if (**format == 's'){
+		char* a = va_arg(ap, char *);
+		write_string(fd, format_description, a);
 	}
-	// integers: precision determines minimum num of caracters, ignores F_ZERO, override minwidth if greater, no output for zero if prec = 0
 	// d, i	int as a signed integer. %d and %i are synonymous for output
 	else if (ft_strchr("di", **format))
-	{
-		intmax_t a = get_signed(format_description->length_modifier, arguments);
-		t_sized_string *str = lltoa_base(a, "0123456789");
-		write_withflags(fd, format_description, str);
-		free(str);
-	}
+		write_signed(fd, format_description, get_signed(format_description->length_modifier, ap));
 	// unsigned
-	// F_SPACE, F_PLUS are ignored
-	// o	unsigned int in octal. F_HASH prepends "0" string to a nonzero result (reduce padding by one)
-	// u	Print decimal unsigned int.
-	// x, X	unsigned int as a hexadecimal number. x uses lower-case letters and X uses upper-case.
-	// F_HASH For x and X conversions, a nonzero result has the string "0x" (or "0X" for X conversions) prepended to it (reduce padding by two)
-	// p	pointer. same as %#zx
 	else if (ft_strchr("oxXup", **format))
 	{
 		format_description->flags &= ~(F_SPACE | F_PLUS);
@@ -194,24 +220,17 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 			format_description->flags |= F_HASH;
 			format_description->length_modifier = L_z;
 		}
-		const char *base;
-		if (**format == 'o')
-			base = "01234567";
-		else if (**format == 'x' || **format == 'p')
-			base = "0123456789abcdef";
-		else if (**format == 'X')
-			base = "0123456789abcdef";
-		uintmax_t b = get_unsigned(format_description->length_modifier, arguments);
-		t_sized_string *str = ulltoa_base(b, base);
-		write_withflags(fd, format_description, str);
-		free(str);
+		write_unsigned(fd, format_description,
+		get_unsigned(format_description->length_modifier, ap), **format);
 	}
 	// add unimplemented for unsupported flags?
-	if (ft_strchr("%pouxXsc", **format))
+	if (ft_strchr("%scdioxXup", **format))
 		*format += 1;
+	else
+		format_description->format_incorrect = 1;
 }
 
-void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
+void	write_next(int fd, const char **format, va_list ap)
 {
 	const char *percent = ft_strchr_or_eol(*format, '%');
 	t_format	format_description;
@@ -226,51 +245,66 @@ void	write_next(int fd, t_buffer *buf, const char **format, va_list arguments)
 	if (**format == '\0')
 		return ;
 	*format += 1;
-	parse_flags(format, &format_description, arguments);
-	parse_precision(format, &format_description, arguments);
+	parse_flags(format, &format_description, ap);
+	parse_precision(format, &format_description, ap);
 	parse_lenghth_modifier(format, &format_description);
-	parse_format_and_write(fd, format, &format_description, arguments);
+	parse_format_and_write(fd, format, &format_description, ap);
 	// if incorrect, write the format line before incorrect symb.
 	// incorrect symb will be produced on the next call of write_next
 	if (format_description.format_incorrect)
 		accumulate_size(write(fd, percent, *format - percent));
 }
 
+int ft_vprintf_fd(int fd, const char *format, va_list ap)
+{
+	while (*format)
+		write_next(1, &format, ap);
+	return (accumulate_size(GET_SIZE_AND_RESET));
+}
+
 int	ft_printf_fd(int fd, const char *format, ...)
 {
-	va_list	arguments;
-	t_buffer buf;
-	va_start(arguments, format);
-	while (*format)
-		write_next(fd, &buf, &format, arguments);
-	va_end(arguments);
-	return (accumulate_size(GET_SIZE_AND_RESET));
+	int ret;
+	va_list	ap;
+
+	va_start(ap, format);
+	ret = ft_vprintf_fd(fd, format, ap);
+	va_end(ap);
+	return (ret);
 }
 
 int	ft_printf(const char *format, ...)
 {
-	va_list	arguments;
+	int ret;
+	va_list	ap;
 
-	return ft_printf_fd(1, format, arguments);
+	va_start(ap, format);
+	ret = ft_vprintf_fd(1, format, ap);
+	va_end(ap);
+	return (ret);
 }
 
-/*
+
+#include <stdio.h>
+void test(const char *format, ...)
+{
+	va_list ap;
+	va_list ap_copy;
+	va_start(ap, format);
+	va_copy(ap_copy, ap);
+	write(1, "ft:\n", 4);
+	int a = ft_vprintf_fd(1, format, ap);
+	write(1, "\nst:\n", 5);
+	int b = vprintf(format, ap_copy);
+	printf("\nft: %d, st: %d\n\n", a, b);
+	va_end(ap);
+}
+
 int	main(void)
 {
-	int		ft_printed;
-	int		printed;
-	char	*str = "abc";
-
-
-	//char *asd = 1;
-	ft_printed = ft_printf("testptr1: %p\n", &str);
-	printf("\nft_printed: %d", ft_printed);
-
-	printf("\n\n\n\n");
-
-	printed = printf("testptr1: %p\n", &str);
-	printf("\nprinted: %d\n\n", printed);
+	test("abc%s", "asd");
+	test("abc%c", 'N');
+	test("abc%d", 123);
 
 	return (0);
 }
-*/

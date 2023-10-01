@@ -1,7 +1,6 @@
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include "libft.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdint.h>
@@ -54,6 +53,7 @@ typedef struct s_format
 	int precision;
 	enum e_length_modifier length_modifier;
 	int format_incorrect;
+	char f;
 } 			t_format;
 
 int	ft_printf(const char *, ...);

@@ -1,6 +1,6 @@
 NAME = libftprintf.a
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+# CFLAGS = -Wall -Werror -Wextra
 SOURCE_DIR = src/
 INCLUDE_DIR = include/
 LIBFT_DIR = libft/
@@ -18,15 +18,17 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-SRC_FILES = ft_printf.c ft_conversions.c puthex_fd.c
+SRC_FILES = ft_printf.c # ft_conversions.c puthex_fd.c
 
 SRC = $(addprefix $(SOURCE_DIR),$(SRC_FILES))
 
 OBJ = $(SRC:.c=.o)
 
 $(NAME): $(LIBFT_DIR)$(LIBFT_NAME) $(OBJ) $(HEADER)
-	ar -rs $(NAME) $(OBJ)
-	@echo "$(GREEN)Library $(NAME) created!$(DEF_COLOR)"
+	cc $(OBJ) ./libftprintf.a -o a.out
+	./a.out
+# ar -rs $(NAME) $(OBJ)
+# @echo "$(GREEN)Library $(NAME) created!$(DEF_COLOR)"
 
 all: $(NAME)
 
@@ -34,10 +36,8 @@ $(LIBFT_DIR)$(LIBFT_NAME):
 	make -C $(LIBFT_DIR)
 	cp $(LIBFT_DIR)$(LIBFT_NAME) ./$(NAME)
 
-#mv $(LIBFT_DIR)$(LIBFT_NAME) ./$(NAME)
-
 %.o : %.c $(HEADER)
-	$(CC) -I $(INCLUDE_DIR) $(CFLAGS) -g -c $< -o $@
+	$(CC) $(CFLAGS) -g -c $< -o $@
 
 #bonus: $(OBJ) $(OBJ_BONUS)
 #	ar -rs $(NAME) $(OBJ) $(OBJ_BONUS)
