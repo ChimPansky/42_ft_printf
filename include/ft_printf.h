@@ -8,7 +8,8 @@
 # include <stdarg.h>
 
 // accumulate_size_defines
-#define GET_SIZE_AND_RESET -2
+#define GET_SIZE_AND_RESET -3
+#define GET_SIZE -2
 #define WRITE_ERROR -1
 
 #define FLAGS_STRING "#0- +"
@@ -53,9 +54,10 @@ typedef struct s_format
 	int precision;
 	enum e_length_modifier length_modifier;
 	int format_incorrect;
-	char f;
 } 			t_format;
 
-int	ft_printf(const char *, ...);
+int	ft_printf(const char *format, ...);
+int	ft_printf_fd(int fd, const char *format, ...);
+int	ft_vprintf_fd(int fd, const char *format, va_list ap);
 
 #endif  // FT_PRINTF_H

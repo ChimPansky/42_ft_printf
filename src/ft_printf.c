@@ -13,6 +13,8 @@ int accumulate_size(ssize_t bytes_written)
 		sz = 0;
 		return (ret);
 	}
+	else if (bytes_written == GET_SIZE)
+		return (ret);
 	else if (sz >= 0)
 		sz += bytes_written;
 	return sz;
@@ -224,6 +226,7 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 		get_unsigned(format_description->length_modifier, ap), **format);
 	}
 	// add unimplemented for unsupported flags?
+	// eE fF gG n aA m
 	if (ft_strchr_no_eol("%scdioxXup", **format))
 		*format += 1;
 	else
@@ -245,7 +248,6 @@ void	write_next(int fd, const char **format, va_list ap)
 	if (**format == '\0')
 		return ;
 	*format += 1;
-
 	parse_flags(format, &format_description, ap);
 	parse_precision(format, &format_description, ap);
 	parse_lenghth_modifier(format, &format_description);
@@ -312,6 +314,8 @@ int	main(void)
 
 	// defined UB
 	test("abc%");  // printf and vprintf behave differently on this one
+	// %p apparently works with '+' and ' ' flags, but not with '#', probably impl-defined
+	test("%.20x", "asd");  // printf and vprintf behave differently on this one
 
 
 	return (0);
