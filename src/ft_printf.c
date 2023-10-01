@@ -21,13 +21,13 @@ int accumulate_size(ssize_t bytes_written)
 void	parse_flags(const char **format, t_format *format_description, va_list ap)
 {
 	const char* flags_string = FLAGS_STRING;
-	const char* next = ft_strchr(flags_string, **format);
+	const char* next = ft_strchr_no_eol(flags_string, **format);
 
 	while (next)
 	{
 		format_description->flags |= (1 >> (next - flags_string));
 		*format += 1;
-		next = ft_strchr(flags_string, **format);
+		next = ft_strchr_no_eol(flags_string, **format);
 	}
 	if ((format_description->flags & F_ZERO) && (format_description->flags & F_MINUS))
 		format_description->flags &= ~F_ZERO;
@@ -54,7 +54,7 @@ void	parse_precision(const char **format, t_format *format_description, va_list 
 		return ;
 	*format += 1;
 	format_description->flags |= F_PRESISION;
-	if (!ft_strchr("0123456789*", **format))
+	if (!ft_strchr_no_eol("0123456789*", **format))
 		format_description->precision = 0;
 	else if (**format == '*')
 	{
@@ -88,7 +88,7 @@ void	parse_lenghth_modifier(const char **format, t_format *format_description)
 		format_description->length_modifier = L_L;
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
-	if (ft_strchr("hlzjtL", **format))
+	if (ft_strchr_no_eol("hlzjtL", **format))
 		*format += 1;
 }
 
@@ -209,10 +209,10 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 		write_string(fd, format_description, a);
 	}
 	// d, i	int as a signed integer. %d and %i are synonymous for output
-	else if (ft_strchr("di", **format))
+	else if (ft_strchr_no_eol("di", **format))
 		write_signed(fd, format_description, get_signed(format_description->length_modifier, ap));
 	// unsigned
-	else if (ft_strchr("oxXup", **format))
+	else if (ft_strchr_no_eol("oxXup", **format))
 	{
 		format_description->flags &= ~(F_SPACE | F_PLUS);
 		if (**format == 'p')
@@ -224,7 +224,7 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 		get_unsigned(format_description->length_modifier, ap), **format);
 	}
 	// add unimplemented for unsupported flags?
-	if (ft_strchr("%scdioxXup", **format))
+	if (ft_strchr_no_eol("%scdioxXup", **format))
 		*format += 1;
 	else
 		format_description->format_incorrect = 1;
@@ -245,6 +245,7 @@ void	write_next(int fd, const char **format, va_list ap)
 	if (**format == '\0')
 		return ;
 	*format += 1;
+
 	parse_flags(format, &format_description, ap);
 	parse_precision(format, &format_description, ap);
 	parse_lenghth_modifier(format, &format_description);
@@ -255,6 +256,7 @@ void	write_next(int fd, const char **format, va_list ap)
 		accumulate_size(write(fd, percent, *format - percent));
 }
 
+// va_list != ... va_start must be called outside of a function with va_list-type param
 int ft_vprintf_fd(int fd, const char *format, va_list ap)
 {
 	while (*format)
@@ -302,9 +304,15 @@ void test(const char *format, ...)
 
 int	main(void)
 {
+	// no flags
 	test("abc%s", "asd");
 	test("abc%c", 'N');
 	test("abc%d", 123);
+	test("abc%%", -123);
+
+	// defined UB
+	test("abc%");  // printf and vprintf behave differently on this one
+
 
 	return (0);
 }
