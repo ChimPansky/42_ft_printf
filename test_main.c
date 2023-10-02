@@ -4,18 +4,22 @@
 int	main()
 {
 	int	ret;
-	//printf("test %0-5d", "test");
-	//printf("test %0-5d", 25);
-	//ret = ft_printf("abc%%def\nghi");
+	int ft_ret;
 	char *str;
+
 	str = "STRING";
-	//ret = ft_printf("%s", str);
-	//ret = ft_printf("%s\n%d", "abcd", 42);
-	//printf("\n\nret: %d\n", ret);
+
 
 	int	ftest;
 
 	ftest = 5;
+	ft_ret = ft_printf("abc%i\ndef% ", 4242);
+	printf("ft_ret: %d\n", ft_ret);
+
+	ret = printf("abc%i\ndef% ", 4242);
+	printf("ret: %d\n", ret);
+
+	//ft_printf("%0+   #   +--+1046.  30s\n\n\n", "abc");
 
 	if (ftest & F_HASH)
 		printf("1st: 1\n");
