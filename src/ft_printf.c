@@ -1,5 +1,5 @@
-#include "../include/libft.h"
-#include "../include/ft_printf.h"
+#include "libft.h"
+#include "ft_printf.h"
 
 int accumulate_size(ssize_t bytes_written)
 {
@@ -148,10 +148,41 @@ uintmax_t get_unsigned(enum e_length_modifier len, va_list ap)
 }
 
 // integers: precision determines minimum num of caracters, ignores F_ZERO, override minwidth if greater, no output for zero if prec = 0
+int	count_nb_ulen(uintmax_t nb, int base_len)
+{
+	int len = 0;
+
+	if (nb == 0)
+		return (1);
+	while (nb)
+	{
+		nb /= base_len;
+		len++;
+	}
+	return len;
+}
+
+int	count_nb_len(intmax_t nb, int base_len)
+{
+	int len = 0;
+
+	if (nb == 0)
+		return (1);
+	while (nb)
+	{
+		nb /= base_len;
+		len++;
+	}
+	return len;
+}
+
 void write_signed(int fd, t_format *format_description, intmax_t nb)
 {
-	// t_sized_string *str = lltoa_base(a, "0123456789");
-	// free(str);
+	const int base_len = 10;
+	const int nb_len = count_nb_len(nb, base_len);
+
+	// flags, adjust len
+	// padding + put_signed_fd(fd, nb, base)
 	accumulate_size(ft_putnbr_fd((int)nb, fd));
 }
 
@@ -170,20 +201,25 @@ void write_unsigned(int fd, t_format *format_description, uintmax_t nb, char f)
 		base = "0123456789abcdef";
 	else if (f == 'X')
 		base = "0123456789abcdef";
-	// t_sized_string *str = ulltoa_base(b, base);
-	// free(str);
+	count_nb_ulen(nb, ft_strlen(base));
+	// flags, adjust len
+	// padding + put_unsigned_fd(fd, nb, base)
 	accumulate_size(ft_putnbr_fd((int)nb, fd));
 }
 
 // minwidth only, the rest is ignored
 void write_char(int fd, t_format *format_description, unsigned char c)
 {
+	// len == 1
+	// padding + output
 	accumulate_size(ft_putchar_fd(c, fd));
 }
 
 // minwidth and precision only, the rest is ignored, precision determine maxlen
 void write_string(int fd, t_format *format_description, char *str)
 {
+	// define len with strnchr
+	// padding + output
 	accumulate_size(ft_putstr_fd(str, fd));
 }
 
@@ -285,37 +321,4 @@ int	ft_printf(const char *format, ...)
 	ret = ft_vprintf_fd(1, format, ap);
 	va_end(ap);
 	return (ret);
-}
-
-
-#include <stdio.h>
-void test(const char *format, ...)
-{
-	va_list ap;
-	va_list ap_copy;
-	va_start(ap, format);
-	va_copy(ap_copy, ap);
-	write(1, "ft:\n", 4);
-	int a = ft_vprintf_fd(1, format, ap);
-	write(1, "\nst:\n", 5);
-	int b = vprintf(format, ap_copy);
-	printf("\nft: %d, st: %d\n\n", a, b);
-	va_end(ap);
-}
-
-int	main(void)
-{
-	// no flags
-	test("abc%s", "asd");
-	test("abc%c", 'N');
-	test("abc%d", 123);
-	test("abc%%", -123);
-
-	// defined UB
-	test("abc%");  // printf and vprintf behave differently on this one
-	// %p apparently works with '+' and ' ' flags, but not with '#', probably impl-defined
-	test("%.20x", "asd");  // printf and vprintf behave differently on this one
-
-
-	return (0);
 }
