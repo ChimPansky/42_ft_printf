@@ -1,5 +1,7 @@
 #include "libft.h"
 #include "ft_printf.h"
+#include <limits.h>
+#include <stdint.h>
 
 int accumulate_size(ssize_t bytes_written)
 {
@@ -20,73 +22,85 @@ int accumulate_size(ssize_t bytes_written)
 	return sz;
 }
 
-void	parse_flags(const char **format, t_format *format_description, va_list ap)
+void	parse_min_width(const char **format, t_format *f_descr, va_list ap)
+{
+	int variadic_min_width;
+
+	f_descr->min_width = ft_atoi_shift(format);
+	if (!f_descr->min_width && **format == '*')
+	{
+		variadic_min_width = va_arg(ap, int);
+		if (f_descr->min_width < 0)
+		{
+			f_descr->flags |= F_MINUS;
+			if (variadic_min_width == INT_MIN)
+				f_descr->min_width = (unsigned)INT_MAX + 1;
+			else
+				f_descr->min_width = -variadic_min_width;
+		}
+		else
+			f_descr->min_width = variadic_min_width;
+		*format += 1;
+	}
+	if (f_descr->min_width)
+		f_descr->flags |= F_MIN_WIDTH;
+}
+
+void	parse_flags(const char **format, t_format *f_descr)
 {
 	const char* flags_string = FLAGS_STRING;
 	const char* next = ft_strchr_no_eol(flags_string, **format);
 
 	while (next)
 	{
-		format_description->flags |= (1 >> (next - flags_string));
+		f_descr->flags |= (1 >> (next - flags_string));
 		*format += 1;
 		next = ft_strchr_no_eol(flags_string, **format);
 	}
-	if ((format_description->flags & F_ZERO) && (format_description->flags & F_MINUS))
-		format_description->flags &= ~F_ZERO;
-	if ((format_description->flags & F_SPACE) && (format_description->flags & F_PLUS))
-		format_description->flags &= ~F_SPACE;
-	format_description->min_width = ft_atoi_shift(format);
-	if (!format_description->min_width && **format == '*')
-	{
-		format_description->min_width = va_arg(ap, int);
-		if (format_description->min_width < 0)
-		{
-			format_description->min_width = -format_description->min_width; // MIN_INT?
-			format_description->flags |= F_MINUS;
-		}
-		*format += 1;
-	}
-	if (format_description->min_width)
-		format_description->flags |= F_MIN_WIDTH;
+	if ((f_descr->flags & F_ZERO) && (f_descr->flags & F_MINUS))
+		f_descr->flags &= ~F_ZERO;
+	if ((f_descr->flags & F_SPACE) && (f_descr->flags & F_PLUS))
+		f_descr->flags &= ~F_SPACE;
 }
 
-void	parse_precision(const char **format, t_format *format_description, va_list ap)
+void	parse_precision(const char **format, t_format *f_descr, va_list ap)
 {
 	if (**format != '.')
 		return ;
 	*format += 1;
-	format_description->flags |= F_PRESISION;
+	f_descr->flags |= F_PRESISION;
+	// minus not allowed even for floating point
 	if (!ft_strchr_no_eol("0123456789*", **format))
-		format_description->precision = 0;
+		f_descr->precision = 0;
 	else if (**format == '*')
 	{
-		format_description->precision = va_arg(ap, int);
-		if (format_description->precision < 0)
-			format_description->flags &= ~F_PRESISION;
+		f_descr->precision = va_arg(ap, int);
+		if (f_descr->precision < 0)
+			f_descr->flags &= ~F_PRESISION;
 		*format += 1;
 	}
 	else
-		format_description->precision = ft_atoi_shift(format);
+		f_descr->precision = ft_atoi_shift(format);
 }
 
-void	parse_lenghth_modifier(const char **format, t_format *format_description)
+void	parse_lenghth_modifier(const char **format, t_format *f_descr)
 {
 	if (ft_strncmp(*format, "hh", 2) == 0)
-		format_description->length_modifier = L_hh;
+		f_descr->length_modifier = L_hh;
 	else if (ft_strncmp(*format, "ll", 2) == 0)
-		format_description->length_modifier = L_ll;
+		f_descr->length_modifier = L_ll;
 	else if (ft_strncmp(*format, "h", 1) == 0)
-		format_description->length_modifier = L_h;
+		f_descr->length_modifier = L_h;
 	else if (ft_strncmp(*format, "l", 1) == 0)
-		format_description->length_modifier = L_l;
+		f_descr->length_modifier = L_l;
 	else if (ft_strncmp(*format, "z", 1) == 0)
-		format_description->length_modifier = L_z;
+		f_descr->length_modifier = L_z;
 	else if (ft_strncmp(*format, "j", 1) == 0)
-		format_description->length_modifier = L_j;
+		f_descr->length_modifier = L_j;
 	else if (ft_strncmp(*format, "t", 1) == 0)
-		format_description->length_modifier = L_t;
+		f_descr->length_modifier = L_t;
 	else if (ft_strncmp(*format, "L", 1) == 0)
-		format_description->length_modifier = L_L;
+		f_descr->length_modifier = L_L;
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
 	if (ft_strchr_no_eol("hlzjtL", **format))
@@ -148,7 +162,7 @@ uintmax_t get_unsigned(enum e_length_modifier len, va_list ap)
 }
 
 // integers: precision determines minimum num of caracters, ignores F_ZERO, override minwidth if greater, no output for zero if prec = 0
-int	count_nb_ulen(uintmax_t nb, int base_len)
+int	count_unb_len(uintmax_t nb, int base_len)
 {
 	int len = 0;
 
@@ -162,25 +176,25 @@ int	count_nb_ulen(uintmax_t nb, int base_len)
 	return len;
 }
 
-int	count_nb_len(intmax_t nb, int base_len)
-{
-	int len = 0;
-
-	if (nb == 0)
-		return (1);
-	while (nb)
-	{
-		nb /= base_len;
-		len++;
-	}
-	return len;
-}
-
-void write_signed(int fd, t_format *format_description, intmax_t nb)
+void write_signed(int fd, t_format *f_descr, intmax_t nb)
 {
 	const int base_len = 10;
-	const int nb_len = count_nb_len(nb, base_len);
+	int nb_len;
+	uintmax_t unb;
 
+	if (INTMAX_MIN == nb)
+		unb = (uintmax_t)INTMAX_MAX + 1;
+	else
+		unb = -1 * nb;
+	nb_len = count_unb_len(unb, base_len);
+	if ((f_descr->flags & F_PRESISION) && (f_descr->precision > nb_len))
+		nb_len = f_descr->precision;
+	if ((f_descr->flags & (F_PLUS | F_SPACE)) || nb < 0)
+		nb_len += 1;
+	if ((f_descr->flags & F_PRESISION) && f_descr->min_width > nb_len)
+	{
+
+	}
 	// flags, adjust len
 	// padding + put_signed_fd(fd, nb, base)
 	accumulate_size(ft_putnbr_fd((int)nb, fd));
@@ -192,7 +206,7 @@ void write_signed(int fd, t_format *format_description, intmax_t nb)
 	// x, X	unsigned int as a hexadecimal number. x uses lower-case letters and X uses upper-case.
 	// F_HASH For x and X conversions, a nonzero result has the string "0x" (or "0X" for X conversions) prepended to it (reduce padding by two)
 	// p	pointer. same as %#zx
-void write_unsigned(int fd, t_format *format_description, uintmax_t nb, char f)
+void write_unsigned(int fd, t_format *f_descr, uintmax_t nb, char f)
 {
 	const char *base;
 	if (f == 'o')
@@ -201,29 +215,49 @@ void write_unsigned(int fd, t_format *format_description, uintmax_t nb, char f)
 		base = "0123456789abcdef";
 	else if (f == 'X')
 		base = "0123456789abcdef";
-	count_nb_ulen(nb, ft_strlen(base));
+	count_unb_len(nb, ft_strlen(base));
 	// flags, adjust len
 	// padding + put_unsigned_fd(fd, nb, base)
 	accumulate_size(ft_putnbr_fd((int)nb, fd));
 }
 
-// minwidth only, the rest is ignored
-void write_char(int fd, t_format *format_description, unsigned char c)
-{
-	// len == 1
-	// padding + output
-	accumulate_size(ft_putchar_fd(c, fd));
-}
-
 // minwidth and precision only, the rest is ignored, precision determine maxlen
-void write_string(int fd, t_format *format_description, char *str)
+void write_string(int fd, t_format *f_descr, char *str)
 {
-	// define len with strnchr
-	// padding + output
-	accumulate_size(ft_putstr_fd(str, fd));
+	size_t precision;
+	size_t len;
+
+	if (!(f_descr->flags & F_PRESISION))
+		f_descr->precision = SIZE_MAX;
+	else
+		precision = f_descr->precision;
+	len = ft_strlen_max(str, precision);
+	if ((f_descr->flags & F_MIN_WIDTH) && f_descr->min_width > len)
+	{
+		if (f_descr->flags & F_MINUS)
+		{
+			accumulate_size(write(fd, str, len));
+			write_padding(fd, f_descr->min_width - len, ' ');
+		}
+		else
+		{
+			write_padding(fd, f_descr->min_width - len, ' ');
+			accumulate_size(write(fd, str, len));
+		}
+	}
+	else
+		accumulate_size(write(fd, str, len));
 }
 
-void	parse_format_and_write(int fd, const char **format, t_format *format_description, va_list ap)
+// minwidth only, the rest is ignored
+void write_char(int fd, t_format *f_descr, char c)
+{
+	f_descr->precision = 1;
+	f_descr->flags |= F_PRESISION;
+	write_string(fd, f_descr, &c);
+}
+
+void	parse_format_and_write(int fd, const char **format, t_format *f_descr, va_list ap)
 {
     //    F_ZERO      The value should be zero padded.  For d, i, o, u, x, X the converted value is padded on the  left  with zeros rather than blanks.
 	// If the 0 and - flags both appear, the 0 flag is ignored.  If a precision is given with a numeric conversion (d, i, o, u, x, and X), the 0 flag is ignored.
@@ -239,57 +273,58 @@ void	parse_format_and_write(int fd, const char **format, t_format *format_descri
 		accumulate_size(write(fd, *format, 1));
 	// c	char (character)
 	else if (**format == 'c')
-		write_char(fd, format_description, (unsigned char)va_arg(ap, int));
+		write_char(fd, f_descr, (unsigned char)va_arg(ap, int));
 	// s	null-terminated string (or precision-length string if prec is determined)
 	else if (**format == 's'){
 		char* a = va_arg(ap, char *);
-		write_string(fd, format_description, a);
+		write_string(fd, f_descr, a);
 	}
 	// d, i	int as a signed integer. %d and %i are synonymous for output
 	else if (ft_strchr_no_eol("di", **format))
-		write_signed(fd, format_description, get_signed(format_description->length_modifier, ap));
+		write_signed(fd, f_descr, get_signed(f_descr->length_modifier, ap));
 	// unsigned
 	else if (ft_strchr_no_eol("oxXup", **format))
 	{
-		format_description->flags &= ~(F_SPACE | F_PLUS);
+		f_descr->flags &= ~(F_SPACE | F_PLUS);
 		if (**format == 'p')
 		{
-			format_description->flags |= F_HASH;
-			format_description->length_modifier = L_z;
+			f_descr->flags |= F_HASH;
+			f_descr->length_modifier = L_z;
 		}
-		write_unsigned(fd, format_description,
-		get_unsigned(format_description->length_modifier, ap), **format);
+		write_unsigned(fd, f_descr,
+		get_unsigned(f_descr->length_modifier, ap), **format);
 	}
 	// add unimplemented for unsupported flags?
 	// eE fF gG n aA m
 	if (ft_strchr_no_eol("%scdioxXup", **format))
 		*format += 1;
 	else
-		format_description->format_incorrect = 1;
+		f_descr->format_incorrect = 1;
 }
 
 void	write_next(int fd, const char **format, va_list ap)
 {
 	const char *percent = ft_strchr_or_eol(*format, '%');
-	t_format	format_description;
+	t_format	f_descr;
 
-	format_description.flags = 0;
-	format_description.length_modifier = L_NULL;
+	f_descr.flags = 0;
+	f_descr.length_modifier = L_NULL;
 	// the moment we see incorrect format, set the flag to true and left format pointing at incorrect sym.
-	format_description.format_incorrect = 0;
+	f_descr.format_incorrect = 0;
 	if (percent > *format)
 		accumulate_size(write(fd, *format, percent - *format));
 	*format = percent;
 	if (**format == '\0')
 		return ;
 	*format += 1;
-	parse_flags(format, &format_description, ap);
-	parse_precision(format, &format_description, ap);
-	parse_lenghth_modifier(format, &format_description);
-	parse_format_and_write(fd, format, &format_description, ap);
+	parse_flags(format, &f_descr);
+	parse_min_width(format, &f_descr, ap);
+	parse_precision(format, &f_descr, ap);
+	parse_lenghth_modifier(format, &f_descr);
+	parse_format_and_write(fd, format, &f_descr, ap);
 	// if incorrect, write the format line before incorrect symb.
 	// incorrect symb will be produced on the next call of write_next
-	if (format_description.format_incorrect)
+	if (f_descr.format_incorrect)
 		accumulate_size(write(fd, percent, *format - percent));
 }
 

@@ -50,7 +50,7 @@ enum e_length_modifier
 typedef struct s_format
 {
 	int	flags;
-	int	min_width;
+	unsigned min_width;
 	int precision;
 	enum e_length_modifier length_modifier;
 	int format_incorrect;
