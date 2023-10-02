@@ -58,7 +58,76 @@ int set_format(const char **format, t_format *settings)
 	(*format)++;
 	return (1);
 }
+/////////////////////////////////////////
+{
+	if (c == 'i' || c == 'd')
+		return (ft_putnbr_base_fd(1, nbr, "0123456789"));
+	if (c == 'x')
+		return (ft_putunsigned_base_fd(1, nbr, "0123456789abcdef"));
+	if (c == 'X')
+		return (ft_putunsigned_base_fd(1, nbr, "0123456789ABCDEF"));
+	return(0);
+}
+int	convert_unsigned_base(char c, size_t nbr)
+{
+	if (c == 'u')
+		return (ft_putunsigned_base_fd(1, nbr, "0123456789"));
+	return(0);
+}
+int	convert_p(void *ptr)
+{
+	if (!ptr)
+	{
+		ft_putstr_fd("(nil)", 1);
+		return (5);
+	}
+	ft_putstr_fd("0x", 1);
+	return (2 + ft_putsizet_base_fd(1, (size_t)ptr, "0123456789abcdef"));
+}
+///////////
+ssize_t	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str)
+{
+	ssize_t	sz;
+    const   size_t base = ft_strlen(base_str);
+    size_t ord;
 
+    sz = 0;
+    ord = 1;
+    while (nbr / base >= ord)
+        ord *= base;
+    while (ord)
+    {
+        sz += write(fd, base_str + (nbr / ord % base), 1);
+        ord /= base;
+    }
+	return (sz);
+}
+
+ssize_t	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str)
+{
+	ssize_t	sz;
+    const   size_t base = ft_strlen(base_str);
+    size_t ord;
+
+    sz = 0;
+    ord = 1;
+    while (nbr / base >= ord)
+        ord *= base;
+    while (ord)
+    {
+        sz += write(fd, base_str + (nbr / ord % base), 1);
+        ord /= base;
+    }
+	return (sz);
+}
+
+ssize_t	ft_putnbr_base_fd(int fd, int nbr, char* base_str)
+{
+	if (nbr >= 0)
+		return (ft_putunsigned_base_fd(fd, nbr, base_str));
+	return (write(fd, "-", 1) + ft_putunsigned_base_fd(fd, -1l * nbr, base_str));
+}
+//////////////////////////////////////////////////////77
 int	print_conversion(int fd, t_format settings, va_list args)
 {
 	size_t 			len;
@@ -72,10 +141,14 @@ int	print_conversion(int fd, t_format settings, va_list args)
 		s = &c;
 		len = 1;
 	}
-	if (settings.conversion == 's')
+	else if (settings.conversion == 's')
 		s = va_arg(args, char *);
 	else if (ft_strchr("di", settings.conversion))
 		s = ft_itoa(va_arg(args, int));
+	else if (settings.conversion == 'u')
+		s = ft_itoa(va_arg(args, unsigned int));
+	//else if (settings.conversion == 'x')
+	//else if (settings.conversion == 'X')
 
 	// todo:
 	//	manipulate s: apply flags, minwidth, precision...
@@ -128,7 +201,7 @@ void	write_part(int fd, int *printed, const char **format, va_list args)
 			return ;
 		}
 		if (**format == '%')
-			printed += print_percent(fd, format);
+			*printed += print_percent(fd, format);
 		else
 		{
 			if (set_format(format, &settings))

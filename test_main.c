@@ -13,10 +13,10 @@ int	main()
 	int	ftest;
 
 	ftest = 5;
-	ft_ret = ft_printf("abc%i\ndef% ", 4242);
+	ft_ret = ft_printf("%%abc%i\ndef", 4242);
 	printf("ft_ret: %d\n", ft_ret);
 
-	ret = printf("abc%i\ndef% ", 4242);
+	ret = printf("%%abc%i\ndef", 4242);
 	printf("ret: %d\n", ret);
 
 	//ft_printf("%0+   #   +--+1046.  30s\n\n\n", "abc");
@@ -38,16 +38,15 @@ int	main()
 	else
 		printf("4th: 0\n");
 
+	int x = write(1, &"%", 1);
+	printf("x: %d\n", x);
+	ret = printf("%u\n", -25);
+	printf("ret: %d\n", ret);
+	ft_ret = ft_printf("%u\n", -25);
+	printf("ft_ret: %d\n", ft_ret);
+
 	char *form = "###  0d";
 	char *s_flags = "-0# +";
 	char *index;
 	char c;
-
-	index = ft_strchr(s_flags, *form);
-	while (index && *form)
-	{
-		form++;
-		printf("%s\n", index);
-		index = ft_strchr(s_flags, *form);
-	}
 }

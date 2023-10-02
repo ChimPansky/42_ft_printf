@@ -47,9 +47,6 @@ int	ft_printf(const char *, ...);
 #endif  // FT_PRINTF_H
 
 
-
-
-
 // Length Modifiers (for later...)
 /*
 enum e_Length_Modifiers
