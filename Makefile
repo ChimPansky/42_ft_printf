@@ -37,7 +37,7 @@ test: $(OBJ) $(LIBFT) test.c
 
 # when rebuild libft if no libft obj deps specified?
 .PHONY: $(LIBFT)
-$(LIBFT): | $(LIBFT_INCL_HEADER)
+$(LIBFT):
 	make -C $(LIBFT_DIR)
 # ln -sf $(LIBFT_DIR)/libft.h $(INCLUDE)/libft.h
 

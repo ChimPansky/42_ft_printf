@@ -6,13 +6,13 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:48 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/03 23:27:28 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/04 01:25:55 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_p.h"
 
-void	write_ptr(int fd, t_ft_printf_format *f_descr, void *ptr)
+void	write_ptr(int fd, t_ft_printf_format *f_descr, const void *ptr)
 {
 	if (ptr == NULL)
 		write_string(fd, f_descr, "(nil)");

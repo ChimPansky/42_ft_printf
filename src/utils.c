@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:37 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/03 23:24:04 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/04 00:59:26 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ int	accumulate_size(ssize_t bytes_written)
 
 void	write_padding(int fd, int sz, char c)
 {
-	char	buf[BUFFER_SIZE];
+	char	buf[FT_PRINTF_BUFFER_SIZE];
 
-	ft_memset(buf, c, BUFFER_SIZE);
-	while (sz >= BUFFER_SIZE)
+	ft_memset(buf, c, FT_PRINTF_BUFFER_SIZE);
+	while (sz >= FT_PRINTF_BUFFER_SIZE)
 	{
-		accumulate_size(write(fd, buf, BUFFER_SIZE));
-		sz -= BUFFER_SIZE;
+		accumulate_size(write(fd, buf, FT_PRINTF_BUFFER_SIZE));
+		sz -= FT_PRINTF_BUFFER_SIZE;
 	}
 	if (sz)
 		accumulate_size(write(fd, buf, sz));

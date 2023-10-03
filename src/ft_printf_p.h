@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:25 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 00:31:02 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/04 01:25:41 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define FT_PRINTF_AS_GET_SIZE_AND_RESET -3
 # define FT_PRINTF_AS_GET_SIZE -2
 # define FT_PRINTF_WRITE_ERROR -1
+
+# define FT_PRINTF_BUFFER_SIZE 1024
 
 # define FT_PRINTF_FLAGS_STRING "#0- +"
 
@@ -94,11 +96,11 @@ intmax_t	get_signed(enum e_ft_printf_length_modifier len, va_list ap);
 uintmax_t	get_unsigned(enum e_ft_printf_length_modifier len, va_list ap);
 int			count_unb_len(uintmax_t nb, int base_len, int precision);
 
-void		write_string(int fd, t_ft_printf_format *f_descr, char *str);
+void		write_string(int fd, t_ft_printf_format *f_descr, const char *str);
 void		write_char(int fd, t_ft_printf_format *f_descr, char c);
 void		write_signed(int fd, t_ft_printf_format *f_descr, intmax_t nb);
 void		write_unsigned(int fd, t_ft_printf_format *f_descr, uintmax_t nb);
-void		write_ptr(int fd, t_ft_printf_format *f_descr, void *ptr);
+void		write_ptr(int fd, t_ft_printf_format *f_descr, const void *ptr);
 
 void		parse_min_width(
 				const char **format,
