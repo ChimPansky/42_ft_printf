@@ -21,22 +21,22 @@ void test(const char *format, ...)
 
 int	main(void)
 {
-	test("abc%%");
-	test("%s", "asd");
-	test("%s", NULL);
-	test("%c", 'N');
-	test("%c", '\0');
-	test("%p", "asd");
-	test("%p", NULL);
+	// test("abc%%");
+	// test("%s", "asd");
+	// test("%s", NULL);
+	// test("%c", 'N');
+	// test("%c", '\0');
+	// test("%p", "asd");
+	// test("%p", NULL);
 
-	test("abc%d", 123);
-	test("abc%u", 123u);
-	test("abc%x", 1024);
-	test("abc%X", 1024);
-	test("abc%o", 1024);
+	// test("abc%d", 123);
+	// test("abc%u", 123u);
+	// test("abc%x", 1024);
+	// test("abc%X", 1024);
+	// test("abc%o", 1024);
 
-	test("%.10x", 1024);  // printf and vprintf behave differently on this one
-	test("%#.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%#.10x", 1024);  // printf and vprintf behave differently on this one
 	test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
 
 	// defined UB

@@ -33,7 +33,7 @@ void write_unb_with_prefix(int fd, t_ft_printf_nb_description *nb_descr, t_ft_pr
 	else
 		padding_len = (int)f_descr->min_width - nb_descr->nb_len - prefix_len;
 	padding_len = padding_len * (padding_len > 0);
-	if (f_descr->flags && FT_F_MINUS)
+	if (f_descr->flags & FT_F_MINUS)
 	{
 		if (prefix_len)
 			accumulate_size(write(fd, nb_descr->prefix, prefix_len));
@@ -60,10 +60,10 @@ void write_unb_with_prefix(int fd, t_ft_printf_nb_description *nb_descr, t_ft_pr
 		{
 			if (padding_len)
 				write_padding(fd, padding_len, ' ');
-			if (nb_descr->nb_len < f_descr->precision)
-				write_padding(fd, f_descr->precision - nb_descr->nb_len, '0');
 			if (prefix_len)
 				accumulate_size(write(fd, nb_descr->prefix, prefix_len));
+			if (nb_descr->nb_len < f_descr->precision)
+				write_padding(fd, f_descr->precision - nb_descr->nb_len, '0');
 			if (nb_descr->nb_len)
 				ft_write_unsigned_base_fd(fd, nb_descr);
 		}
