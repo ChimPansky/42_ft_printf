@@ -1,55 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_itoa_base_signed.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/02 22:02:46 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/02 23:09:49 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/03 00:20:59 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	ft_get_int_order(int nb)
+char	*ft_itoa_base_signed(int n, char *base)
 {
-	size_t	ord;
-
-	ord = 1;
-	while (nb / 10 != 0)
-	{
-		ord++;
-		nb /= 10;
-	}
-	return (ord);
-}
-
-char	*ft_itoa(int n)
-{
-	char	*str;
+	char	*pos_conversion;
+	char	*result;
 	int		neg;
-	size_t	len;
 	long	nb;
 
 	neg = 0;
 	nb = (long)n;
-	len = ft_get_int_order(n);
 	if (nb < 0)
-		neg = 1;
-	str = ft_calloc(sizeof(char), len + neg + 1);
-	if (!str)
-		return (NULL);
-	if (neg)
 	{
-		str[0] = '-';
+		neg = 1;
 		nb *= -1;
 	}
-	str[len + neg] = '\0';
-	while (len--)
-	{
-		str[len + neg] = '0' + (nb % 10);
-		nb /= 10;
-	}
-	return (str);
+	pos_conversion = ft_itoa_base_unsigned(nb, base);
+	if (!neg)
+		return (pos_conversion);
+	result = ft_strjoin("-", pos_conversion);
+	free(pos_conversion);
+	if (!result)
+		return (NULL);
+	return (result);
 }

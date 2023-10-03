@@ -1,5 +1,7 @@
 #include "ft_printf.h"
 
+
+
 void set_format_flags(const char **format, t_format *settings)
 {
 	while (ft_strchr(S_FLAGS, **format))
@@ -58,22 +60,7 @@ int set_format(const char **format, t_format *settings)
 	(*format)++;
 	return (1);
 }
-/////////////////////////////////////////
-{
-	if (c == 'i' || c == 'd')
-		return (ft_putnbr_base_fd(1, nbr, "0123456789"));
-	if (c == 'x')
-		return (ft_putunsigned_base_fd(1, nbr, "0123456789abcdef"));
-	if (c == 'X')
-		return (ft_putunsigned_base_fd(1, nbr, "0123456789ABCDEF"));
-	return(0);
-}
-int	convert_unsigned_base(char c, size_t nbr)
-{
-	if (c == 'u')
-		return (ft_putunsigned_base_fd(1, nbr, "0123456789"));
-	return(0);
-}
+/*
 int	convert_p(void *ptr)
 {
 	if (!ptr)
@@ -84,78 +71,132 @@ int	convert_p(void *ptr)
 	ft_putstr_fd("0x", 1);
 	return (2 + ft_putsizet_base_fd(1, (size_t)ptr, "0123456789abcdef"));
 }
-///////////
-ssize_t	ft_putunsigned_base_fd(int fd, unsigned int nbr, char* base_str)
+*/
+char	*add_prefix(char *s, const char *pre)
 {
-	ssize_t	sz;
-    const   size_t base = ft_strlen(base_str);
-    size_t ord;
+	char	*to_free;
+	char	*result;
 
-    sz = 0;
-    ord = 1;
-    while (nbr / base >= ord)
-        ord *= base;
-    while (ord)
-    {
-        sz += write(fd, base_str + (nbr / ord % base), 1);
-        ord /= base;
-    }
-	return (sz);
+	result = s;
+	to_free = s;
+	result = ft_strjoin(pre, result);
+	free(to_free);
+	return (result);
 }
 
-ssize_t	ft_putsizet_base_fd(int fd, size_t nbr, char* base_str)
+char	*apply_flags_and_min_width(char *s, t_format settings)
 {
-	ssize_t	sz;
-    const   size_t base = ft_strlen(base_str);
-    size_t ord;
+	char	*result;
+	char	*to_free;
 
-    sz = 0;
-    ord = 1;
-    while (nbr / base >= ord)
-        ord *= base;
-    while (ord)
-    {
-        sz += write(fd, base_str + (nbr / ord % base), 1);
-        ord /= base;
-    }
-	return (sz);
+	to_free = s;
+	result = s;
+	if (settings.flags & F_HASH)
+	{
+		if (settings.conversion == 'x')
+			result = add_prefix(result, "0x");
+		else if (settings.conversion == 'X')
+			result = add_prefix(result, "0X");
+	}
+	if (ft_strchr("di", settings.conversion))
+	{
+		if (settings.flags & F_PLUS)
+			result = add_prefix(result, "+");
+		else if (settings.flags & F_SPACE)
+			result = add_prefix(result, " ");
+	}
+	if (settings.min_width)
+	{
+		if (settings.flags & F_MINUS)
+			result = ft_strrpad(result, ' ', settings.min_width);
+		else if (ft_strchr("diupxX", settings.conversion) && settings.flags & F_ZERO)
+			result = ft_strlpad(result, '0', settings.min_width);
+		else
+			result = ft_strlpad(result, ' ', settings.min_width);
+		free(to_free);
+	}
+	return (result);
 }
 
-ssize_t	ft_putnbr_base_fd(int fd, int nbr, char* base_str)
+char	*apply_precision(char *s, t_format settings)
 {
-	if (nbr >= 0)
-		return (ft_putunsigned_base_fd(fd, nbr, base_str));
-	return (write(fd, "-", 1) + ft_putunsigned_base_fd(fd, -1l * nbr, base_str));
+	char	*result;
+	char	*to_free;
+
+	printf("SETTINGS->FLAGS: %d\n", settings.flags);
+	printf("SETTINGS->MIN_WIDTH: %d\n", settings.min_width);
+	printf("SETTINGS->PRECISION: %d\n", settings.precision);
+	printf("SETTINGS->CONVERSION: %c\n", settings.conversion);
+	result = s;
+	to_free = s;
+	if (settings.precision < 0)
+		return (result);
+	if (ft_strchr("diupxX", settings.conversion))
+	{
+		result = ft_strlpad(s, '0', settings.precision);
+		free(to_free);
+		if (settings.conversion == 'p')
+			result = add_prefix(result, "0x");
+	}
+	else if (settings.conversion == 's')
+	{
+		result = ft_substr(s, 0, settings.precision);
+		free(to_free);
+	}
+	return (result);
 }
-//////////////////////////////////////////////////////77
+
+
 int	print_conversion(int fd, t_format settings, va_list args)
 {
-	size_t 			len;
-	int				bytes_written;
+	int		bytes_written;
 	char	c;
-	char 			*s;
+	char 	*s;		// MALLOCED (except for nulls and c-conv)
+	void	*ptr;
 
 	if (settings.conversion == 'c')
 	{
 		c = va_arg(args, int);
-		s = &c;
-		len = 1;
+		s = ft_strdup(" ");
+		s[0] = c;
 	}
 	else if (settings.conversion == 's')
+	{
 		s = va_arg(args, char *);
+		if (!s)
+			s = ft_strdup("(null)");
+		else
+			s = ft_strdup(s);
+	}
 	else if (ft_strchr("di", settings.conversion))
 		s = ft_itoa(va_arg(args, int));
 	else if (settings.conversion == 'u')
-		s = ft_itoa(va_arg(args, unsigned int));
-	//else if (settings.conversion == 'x')
-	//else if (settings.conversion == 'X')
+		s = ft_itoa_base_unsigned(va_arg(args, unsigned int), "0123456789");
+	else if (settings.conversion == 'x')
+		s = ft_itoa_base_unsigned(va_arg(args, unsigned int), "0123456789abcdef");
+	else if (settings.conversion == 'X')
+		s = ft_itoa_base_unsigned(va_arg(args, unsigned int), "0123456789ABCDEF");
+	else if (settings.conversion == 'p')
+	{// add 0x!!!
+		/*write(fd, "WADUP?", 6);
+		printf("SETTINGS->FLAGS: %d\n", settings.flags);
+		printf("SETTINGS->MIN_WIDTH: %d\n", settings.min_width);
+		printf("SETTINGS->PRECISION: %d\n", settings.precision);
+		printf("SETTINGS->CONVERSION: %c\n", settings.conversion);
+		*/
+		ptr = va_arg(args, void *);
+		if (!ptr)
+			s = ft_strdup("(nil)");
+		else
+			s = ft_itoa_base_unsigned((size_t)ptr, "0123456789abcdef");
+	}
 
 	// todo:
 	//	manipulate s: apply flags, minwidth, precision...
-	if (settings.conversion != 'c')
-		len = ft_strlen(s);
-	bytes_written = write(fd, s, len);
-
+	s = apply_precision(s, settings);
+	s = apply_flags_and_min_width(s, settings);
+	bytes_written = write(fd, s, ft_strlen(s));
+	free(s);
 	return (bytes_written);
 }
 int	print_regular(int fd, const char **format)
@@ -180,7 +221,7 @@ int	print_percent(int fd, const char **format)
 {
 	int	bytes_written;
 
-	bytes_written = write(fd, &"%", 1);
+	bytes_written = write(fd, "%", 1);
 	(*format)++;
 	return (bytes_written);
 }

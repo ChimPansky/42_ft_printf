@@ -1,55 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_itoa_base_unsigned.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/02 22:02:46 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/03 00:21:06 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/03 00:31:44 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	ft_get_int_order(int nb)
-{
-	size_t	ord;
-
-	ord = 1;
-	while (nb / 10 != 0)
-	{
-		ord++;
-		nb /= 10;
-	}
-	return (ord);
-}
-
-char	*ft_itoa(int n)
+char	*ft_itoa_base_unsigned(size_t n, char *base)
 {
 	char	*str;
-	int		neg;
+	size_t	base_len;
 	size_t	len;
-	long	nb;
 
-	neg = 0;
-	nb = (long)n;
-	len = ft_get_int_order(n);
-	if (nb < 0)
-		neg = 1;
-	str = ft_calloc(sizeof(char), len + neg + 1);
+	base_len = ft_strlen(base);
+	len = ft_get_int_order_base(n, base_len);
+	str = ft_calloc(sizeof(char), len + 1);
 	if (!str)
 		return (NULL);
-	if (neg)
-	{
-		str[0] = '-';
-		nb *= -1;
-	}
-	str[len + neg] = '\0';
+	str[len] = '\0';
 	while (len--)
 	{
-		str[len + neg] = '0' + (nb % 10);
-		nb /= 10;
+		str[len] = base[n % base_len];
+		n /= base_len;
 	}
 	return (str);
 }
