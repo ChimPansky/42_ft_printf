@@ -1,10 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsers.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/03 23:01:33 by vvilensk          #+#    #+#             */
+/*   Updated: 2023/10/03 23:21:06 by vvilensk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <limits.h>
 #include "ft_printf_p.h"
 
 // negative width activates F_MINUS
-void	parse_min_width(const char **format, t_ft_printf_format *f_descr, va_list ap)
+void	parse_min_width(
+			const char **format,
+			t_ft_printf_format *f_descr,
+			va_list ap)
 {
-	int variadic_min_width;
+	int	variadic_min_width;
 
 	if (**format == '*')
 	{
@@ -27,20 +42,26 @@ void	parse_min_width(const char **format, t_ft_printf_format *f_descr, va_list a
 		f_descr->flags |= FT_F_MIN_WIDTH;
 }
 
-//	F_ZERO:		For d, i, o, u, x, X the converted value is padded on the  left  with zeros rather than blanks.
+//	F_ZERO:		For integers
+//		The converted value is padded on the left with zeros rather than blanks.
 //		If the F_ZERO and F_MINUS flags both appear, the F_ZERO flag is ignored.
 //		If a precision is given, the F_ZERO flag is ignored.
-//	F_MINUS:	The converted value is to be left adjusted on the field boundary.
+//	F_MINUS:
+//		The converted value is to be left adjusted on the field boundary.
 //		The default is right justification
 //		F_MINUS overrides F_ZERO if both are used.
-//	F_SPACE:	A space should be left before a positive number (or empty string) produced by a signed conversion.
-//	F_PLUS:		A  sign (+ or -) should always be placed before a number produced by a signed conversion.
+//	F_SPACE:	For signed numbers
+//		A space should be left before a positive number (or empty string)
+//	F_PLUS:		For signed numbers
+//		A  sign (+ or -) should always be placed before a number
 //		By default, a sign is used only for negative numbers.
 //		F_PLUS overrides F_SPACE if both are used.
+//	F_HASH:		For x, X, o conversions of a nonzero nums
+//		add "0x", "0X", "0" prefix corresponededly
 void	parse_flags(const char **format, t_ft_printf_format *f_descr)
 {
-	const char* flags_string = FT_PRINTF_FLAGS_STRING;
-	const char* next = ft_strchr_no_eol(flags_string, **format);
+	const char	*flags_string = FT_PRINTF_FLAGS_STRING;
+	const char	*next = ft_strchr_no_eol(flags_string, **format);
 
 	while (next)
 	{
@@ -55,9 +76,14 @@ void	parse_flags(const char **format, t_ft_printf_format *f_descr)
 }
 
 // Minus not allowed after '.' even for floating point nums
-void	parse_precision(const char **format, t_ft_printf_format *f_descr, va_list ap)
+// For ints if precision is zero nothing should be displayed
+// For strings determines max length
+void	parse_precision(
+			const char **format,
+			t_ft_printf_format *f_descr,
+			va_list ap)
 {
-	int variadic_precision;
+	int	variadic_precision;
 
 	if (**format != '.')
 		return ;
@@ -104,14 +130,18 @@ void	parse_lenghth_modifier(const char **format, t_ft_printf_format *f_descr)
 		*format += 1;
 }
 
-// %:		Prints a literal % character. all flags and length modifiers are ignored, no error
+// %:		Prints a literal % character. any format modifiers are ignored.
 // c:		char (character)
-// s:		null-terminated string (or precision-length string if prec is determined)
+// s:		null-terminated string (or no-more-than-precision-length string)
 // di:		int as a signed integer. %d and %i are synonymous for output
 // oxXu:	unsigned ints in diff base
 // p:		Pointer (%p == %#zx)
 // unimplemented flags: eE fF gG aA m n
-void	parse_format_and_write(int fd, const char **format, t_ft_printf_format *f_descr, va_list ap)
+void	parse_format_and_write(
+			int fd,
+			const char **format,
+			t_ft_printf_format *f_descr,
+			va_list ap)
 {
 	f_descr->conversion = **format;
 	if (f_descr->conversion == '%')

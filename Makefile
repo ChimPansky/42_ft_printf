@@ -15,8 +15,10 @@ SRC_FILES = \
 	parsers.c \
 	utils.c \
 	write_chars.c \
+	write_ints_in_order.c \
 	write_ints.c \
-	write_ptr.c
+	write_ptr.c \
+	write_unsigned_base_fd.c
 
 SRC = $(addprefix $(SOURCE_DIR)/,$(SRC_FILES))
 OBJ = $(SRC:.c=.o)

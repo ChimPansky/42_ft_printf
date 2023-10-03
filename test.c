@@ -10,7 +10,7 @@ void test(const char *format, ...)
 	va_list ap_copy;
 	va_start(ap, format);
 	va_copy(ap_copy, ap);
-	ft_putstr_fd(format, 1);
+	ft_putstr_fd((char *)format, 1);
 	write(1, "\nft:\n", 5);
 	int a = ft_vprintf_fd(1, format, ap);
 	write(1, "\nst:\n", 5);

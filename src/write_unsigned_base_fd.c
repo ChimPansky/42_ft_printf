@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   write_ptr.c                                        :+:      :+:    :+:   */
+/*   write_unsigned_base_fd.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/03 23:01:48 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/03 23:27:28 by vvilensk         ###   ########.fr       */
+/*   Created: 2023/10/04 00:30:10 by vvilensk          #+#    #+#             */
+/*   Updated: 2023/10/04 00:32:09 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_p.h"
 
-void	write_ptr(int fd, t_ft_printf_format *f_descr, void *ptr)
+void	ft_write_unsigned_base_fd(
+			int fd,
+			const t_ft_printf_nb_description *nb_descr)
 {
-	if (ptr == NULL)
-		write_string(fd, f_descr, "(nil)");
-	else
+	char		buf[sizeof(uintmax_t) * CHAR_BIT];
+	size_t		ord;
+	size_t		idx;
+
+	idx = 0;
+	ord = 1;
+	while (nb_descr->nb / nb_descr->base_len >= ord)
+		ord *= nb_descr->base_len;
+	while (ord)
 	{
-		f_descr->conversion = 'x';
-		f_descr->flags |= FT_F_HASH;
-		f_descr->length_modifier = FT_L_z;
-		write_unsigned(fd, f_descr, (size_t)ptr);
+		buf[idx++] = nb_descr->base[nb_descr->nb / ord % nb_descr->base_len];
+		ord /= nb_descr->base_len;
 	}
+	accumulate_size(write(fd, buf, nb_descr->nb_len));
 }

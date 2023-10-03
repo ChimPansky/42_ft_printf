@@ -1,3 +1,4 @@
+# no extension pattern
 .vscode
 *.code-workspace
 .clangd
