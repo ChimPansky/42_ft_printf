@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:25 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 01:25:41 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/04 12:37:02 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,18 @@ typedef struct s_ft_printf_output_order_options
 // static finctions in headers ?
 int			accumulate_size(ssize_t bytes_written);
 void		write_padding(int fd, int sz, char c);
+
 intmax_t	get_signed(enum e_ft_printf_length_modifier len, va_list ap);
 uintmax_t	get_unsigned(enum e_ft_printf_length_modifier len, va_list ap);
 int			count_unb_len(uintmax_t nb, int base_len, int precision);
+void		ft_write_unsigned_base_fd(
+				int fd,
+				const t_ft_printf_nb_description *nb_descr);
+
+void		write_unb_in_order(
+				int fd,
+				const t_ft_printf_nb_description *nb_descr,
+				const t_ft_printf_format *f_descr);
 
 void		write_string(int fd, t_ft_printf_format *f_descr, const char *str);
 void		write_char(int fd, t_ft_printf_format *f_descr, char c);
@@ -122,13 +131,9 @@ void		parse_format_and_write(
 				t_ft_printf_format *f_descr,
 				va_list ap);
 
-void		write_unb_in_order(
-				int fd,
-				const t_ft_printf_nb_description *nb_descr,
-				const t_ft_printf_format *f_descr);
-
-void		ft_write_unsigned_base_fd(
-				int fd,
-				const t_ft_printf_nb_description *nb_descr);
+/*
+void		write_double(int fd, t_ft_printf_format *f_descr, long double nb);
+long double	get_double(enum e_ft_printf_length_modifier len, va_list ap);
+*/
 
 #endif  // FT_PRINTF_P_H

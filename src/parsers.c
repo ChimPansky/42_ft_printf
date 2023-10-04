@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:33 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/03 23:21:06 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/04 12:36:35 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,3 +161,10 @@ void	parse_format_and_write(
 	else
 		f_descr->format_incorrect = 1;
 }
+
+/*
+else if (ft_strchr_no_eol("fFeEgG", f_descr->conversion))
+	write_double(fd, f_descr, get_double(f_descr->length_modifier, ap));
+else if (f_descr->conversion == 'n')
+	write_output_sz(fd, f_descr, va_arg(ap, void *));
+*/
