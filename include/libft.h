@@ -6,7 +6,7 @@
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 18:40:07 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/03 10:47:18 by tkasbari         ###   ########.fr       */
+/*   Updated: 2023/10/04 20:02:37 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,8 @@ char	*ft_itoa_base_unsigned(size_t n, char *base);
 char	*ft_strreplicate(char c, size_t len);
 char	*ft_strlpad(const char *s, char cpad, size_t target_size);
 char	*ft_strrpad(const char *s, char cpad, size_t target_size);
+char	*ft_strlpad_free(char *s, char cpad, size_t target_size, int to_free);
+char	*ft_strrpad_free(char *s, char cpad, size_t target_size, int to_free);
+char	*ft_strjoin_free(char *s1, char *s2, int to_free);
+char	*ft_substr_free(char *s, unsigned int start, size_t len, int to_free);
 #endif

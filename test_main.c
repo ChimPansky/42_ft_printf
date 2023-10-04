@@ -2,76 +2,123 @@
 #include <stdio.h>
 #include <limits.h>
 
+void print_test(char *format, int mine)
+{
+	int ret;
+	if (mine)
+	{
+	//	printf("Mine    : ");
+		ret = ft_printf(format, '0', 0, '0');
+		printf("\nMy Return Val      : %d\n", ret);
+	}
+	else
+	{
+	//	printf("Expected: ");
+		ret = printf(format, '0', 0, '0');
+		printf("\nExpected Return Val: %d\n\n\n", ret);
+	}
+}
+
 int	main()
 {
-	int	ret;
-	int ft_ret;
-	char *str;
+	int	i;
+	int ret;
+	char *format;
+	int x;
 
-	//ft_printf("%0+   #   +--+1046.  30s\n\n\n", "abc");
+	i = 1;
+
+	format = "%c %c %c";
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, '0', 0, '0');
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, '0', 0, '0');
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	format = "%c";
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, '0' - 256);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, '0' - 256);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+
+	format = " %p %p ";
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, LONG_MIN, LONG_MAX);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, LONG_MIN, LONG_MAX);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	format = " %p %p ";
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, INT_MIN, INT_MAX);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, INT_MIN, INT_MAX);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	format = " %p %p ";
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, ULONG_MAX, -ULONG_MAX);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, ULONG_MAX, -ULONG_MAX);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	format = " %p %p ";
+
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, 1, 0);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, 1, 0);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	format = "%%%c%%%s%%%d%%%i%%%u%%%x%%%X%%%% %%%c%%%s%%%d%%%i%%%u%%%x%%%X%%%% %%%c%%%s%%%d%%%i%%%u%%%x%%%X%%%% %c%%";
+
+	ft_putendl_fd(format, 1);
+	ret = ft_printf(format, 'A', "42", 42, 42 ,42 , 42, 42, 'B', "-42", -42, -42 ,-42 ,-42, 42, 'C', "0", 0, 0 ,0 ,0, 42, 0);
+	printf("\nMy Return Val      : %d\n", ret);
+	ret = printf(format, 'A', "42", 42, 42 ,42 , 42, 42, 'B', "-42", -42, -42 ,-42 ,-42, 42, 'C', "0", 0, 0 ,0 ,0, 42, 0);
+	printf("\nExpected Return Val: %d\n\n\n", ret);
+
+	int	ft_ret;
+	ret = printf("%05d%%%whaaat", 'X', "def");
+	printf("\n");
+	ft_ret = ft_printf("%05d%%%whaaat", 'X', "def");
+	printf("\n");
+	printf("ret: %d\n", ret);
+	printf("ft_ret: %d\n", ft_ret);
+
+	//ret = ft_strlen ('a');
+	//printf("%d\n", ret);
+	ret = ft_printf("%c", 0);
+	printf("%d\n\n\n\n", ret);
+
+	ret = ft_printf("%10c|\n", 'A');
+	ret = ft_printf("%-10c|\n", 'A');
+
+	ret = printf("%10c|\n", 'A');
+	ret = printf("%-10c|\n", 'A');
+	//printf("%d\n", ret);
+
+
+	//ft_printf('a');
+
 /*
-	if (ftest & F_HASH)
-		printf("1st: 1\n");
-	else
-		printf("1st: 0\n");
-	if (ftest & F_ZERO)
-		printf("2nd: 1\n");
-	else
-		printf("2nd: 0\n");
-	if (ftest & F_MINUS)
-		printf("3rd: 1\n");
-	else
-		printf("3rd: 0\n");
-	if (ftest & 8)
-		printf("4th: 1\n");
-	else
-		printf("4th: 0\n");
+	format = "%c %c %c";
+	x = printf("Test 1: \"%s\"\n", format);
+	x = printf("Mine    : ");
+	my_ret = ft_printf(format, '0', 0, '0');
+	x = printf("\nMy Return Val      : %d\n", my_ret);
+	x = printf("Expected: ");
+	xp_ret = printf(format, '0', 0, '0');./a
+	x = printf("\nExpected Return Val: %d\n\n\n", xp_ret);
 
-
-
-	long ltest = 2147483648;
-	int	itest = -3215634;
-	unsigned int uitest = (unsigned int)itest;
-
-
-	printf("ltest: %li\n", ltest);
-	printf("itest: %i\n", itest);
-	printf("uitest: %lu\n", uitest);
-
-
-    printf("The largest number a long can hold is     : %ld\n", LONG_MAX);
-	printf("The largest number a long long can hold is: %lld\n", LLONG_MAX);
-	printf("pointer test -10: %p\n", -10);
-	printf("pointer test abc: %p\n", &"abc");
-	int a = 15;
-	int *ptrtest = &a;
-	printf("pointer test ptrtest: %p\n", ptrtest);
-	char *ibtest = ft_itoa_base_unsigned((size_t)ptrtest, "0123456789abcdef");
-	printf("ibtest: %s\n", ibtest);
-	printf("printf ibtest: %p\n", ibtest);
-	printf("o test: %o\n\n\n\n\n", -0);
-
-
-	//ptrtest = NULL;
-	char *str1 = NULL;
-
-	ret = printf("%p\n", ptrtest);
-	printf("ret: %d\n", ret);
-	ft_ret = ft_printf("%p\n", ptrtest);
-	printf("ft_ret: %d\n", ft_ret);
-	ft_ret = ft_printf("char: %c\n", 68);
-	printf("ret: %d\n", ft_ret);
-	ft_ret = ft_printf("str1: %s\n", str1);
-	printf("ret: %d\n\n", ft_ret);
+	x = printf("Test 1: \"%s\" \n", format);
 */
-	int a = 15;
-	int *ptrtest = &a;
-
-	ret = printf("plus: % +  20.6d\n", 324);
-	printf("ret: %d\n", ret);
-	ft_ret = ft_printf("plus: %   + 20.6d\n", 324);
-	printf("ft_ret: %d\n", ft_ret);
-
+/*
+32: 	TEST(8, print(" %c %c %c ", '2', '1', 0));
+33: 	TEST(9, print(" %c %c %c ", 0, '1', '2'));
+*/
 	//printf("lpad: %s\n", ft_strlpad("abc", 'O', 15));
 
     return 0;

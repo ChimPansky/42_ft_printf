@@ -32,7 +32,7 @@ all: $(NAME)
 
 $(LIBFT_DIR)$(LIBFT_NAME):
 	make -C $(LIBFT_DIR)
-	cp $(LIBFT_DIR)$(LIBFT_NAME) ./$(NAME)
+	mv $(LIBFT_DIR)$(LIBFT_NAME) ./$(NAME)
 
 #mv $(LIBFT_DIR)$(LIBFT_NAME) ./$(NAME)
 

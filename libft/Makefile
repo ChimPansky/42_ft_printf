@@ -21,7 +21,8 @@ SRC = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
 	ft_strdup.c ft_striteri.c ft_strjoin.c ft_strlcat.c ft_strlcpy.c ft_strlen.c \
 	ft_strmapi.c ft_strncmp.c ft_strnstr.c ft_strrchr.c ft_strtrim.c ft_substr.c \
 	ft_tolower.c ft_toupper.c ft_get_int_order_base.c ft_itoa_base_signed.c \
-	ft_itoa_base_unsigned.c ft_strreplicate.c ft_strlpad.c ft_strrpad.c
+	ft_itoa_base_unsigned.c ft_strreplicate.c ft_strlpad.c ft_strrpad.c \
+	ft_strjoin_free.c ft_substr_free.c ft_strlpad_free.c ft_strrpad_free.c
 
 SRC_BONUS =  ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c \
 	ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c \
