@@ -6,7 +6,7 @@
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 10:07:43 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/03 21:11:22 by tkasbari         ###   ########.fr       */
+/*   Updated: 2023/10/05 11:27:50 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strlpad(const char *s, char cpad, size_t target_size)
 
 	s_len = ft_strlen(s);
 	if (s_len >= target_size)
-		return(ft_strdup(s));
+		return (ft_strdup(s));
 	spad = ft_strreplicate(cpad, target_size - s_len);
 	if (!spad)
 		return (NULL);

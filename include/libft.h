@@ -6,7 +6,7 @@
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 18:40:07 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 20:02:37 by tkasbari         ###   ########.fr       */
+/*   Updated: 2023/10/05 08:22:07 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,7 @@ char	*ft_strlpad_free(char *s, char cpad, size_t target_size, int to_free);
 char	*ft_strrpad_free(char *s, char cpad, size_t target_size, int to_free);
 char	*ft_strjoin_free(char *s1, char *s2, int to_free);
 char	*ft_substr_free(char *s, unsigned int start, size_t len, int to_free);
+int		ft_iif_int(int condition, int true_val, int false_val);
+void	*ft_iif_ptr(int condition, void *true_val, void *false_val);
+void	*ft_iif_ptr_f(int cond, char *(*f)(char const *), void *v1, void *v2);
 #endif

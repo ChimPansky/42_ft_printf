@@ -6,7 +6,7 @@
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 10:12:10 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/03 10:29:43 by tkasbari         ###   ########.fr       */
+/*   Updated: 2023/10/05 11:28:59 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*ft_strreplicate(char c, size_t len)
 	if (len)
 	{
 		while (len--)
-		result[len] = c;
+			result[len] = c;
 	}
 	return (result);
 }

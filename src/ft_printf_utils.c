@@ -1,30 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrpad.c                                       :+:      :+:    :+:   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/03 10:07:43 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/05 11:28:00 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/05 13:13:44 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/05 14:08:07 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-/*	Right Pad a String <s> with a character <cpad> to reach a certain
-	size <target_size>*/
-char	*ft_strrpad(const char *s, char cpad, size_t target_size)
+char	*add_prefix(char *s, char *pre)
 {
-	size_t	s_len;
 	char	*result;
-	char	*spad;
 
-	s_len = ft_strlen(s);
-	if (s_len >= target_size)
-		return (ft_strdup(s));
-	spad = ft_strreplicate(cpad, target_size - s_len);
-	result = ft_strjoin(s, spad);
-	free(spad);
+	result = ft_strjoin_free(pre, s, 2);
+	if (!result)
+		return (s);
+	return (result);
+}
+
+char	*pad_negative(char *s, char cpad, size_t width, int to_free)
+{
+	char	*result;
+
+	result = s;
+	*result = '0';
+	result = ft_strlpad_free(result, cpad, width, to_free);
+	if (result)
+		*result = '-';
 	return (result);
 }
