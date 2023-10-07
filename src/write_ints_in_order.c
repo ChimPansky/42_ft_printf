@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 00:25:41 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/07 10:36:49 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 12:03:02 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ static void	write_right_adjusted_with_zeros(
 {
 	if (order_opts->prefix)
 		accumulate_size(write(fd, nb_descr->prefix, order_opts->prefix));
-	if (order_opts->padding)
-		write_padding(fd, order_opts->padding, '0');
-	if (order_opts->leading_zeros)
-		write_padding(fd, order_opts->leading_zeros, '0');
+	if (order_opts->padding + order_opts->leading_zeros)
+		write_padding(fd, order_opts->padding + order_opts->leading_zeros, '0');
 	if (nb_descr->nb_len)
 		ft_write_unsigned_base_fd(fd, nb_descr);
 }

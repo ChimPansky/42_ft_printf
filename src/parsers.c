@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:33 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/07 10:36:49 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 11:57:14 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	parse_min_width(
 		*format += 1;
 	}
 	else
-		f_descr->min_width = ft_atoi_shift(format);
+		f_descr->min_width = ft_atoi_shift((char **)format);
 	if (f_descr->min_width)
 		f_descr->flags |= FT_PRINTF_MIN_WIDTH;
 }
@@ -96,7 +96,7 @@ void	parse_precision(
 		*format += 1;
 	}
 	else
-		variadic_precision = ft_atoi_shift(format);
+		variadic_precision = ft_atoi_shift((char **)format);
 	if (variadic_precision < 0)
 	{
 		f_descr->flags &= ~FT_PRINTF_PRESISION;

@@ -15,12 +15,12 @@ SRC_FILES = \
 	parsers.c \
 	utils.c \
 	write_chars.c \
-	write_doubles_helpers.c \
-	write_doubles.c \
 	write_ints_helpers.c \
 	write_ints_in_order.c \
 	write_ints.c \
-	write_ptr.c \
+	write_ptr.c
+# write_doubles_helpers.c \
+# write_doubles.c \
 
 SRC = $(addprefix $(SOURCE_DIR)/,$(SRC_FILES))
 OBJ = $(SRC:.c=.o)

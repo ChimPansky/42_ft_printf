@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 01:09:57 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/06 15:52:33 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 11:57:40 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,12 +103,12 @@ int	main(void)
 
 	//test("%hhu", 513);
 
-	printf("abc%");
-	ft_printf("abc%");
+	// printf("abc%");
+	// ft_printf("abc%");
 
-	// test("%.10x", 1024);  // printf and vprintf behave differently on this one
-	// test("%#.10x", 1024);  // printf and vprintf behave differently on this one
-	// test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
+	test("%.10x", 1024);  // printf and vprintf behave differently on this one
+	test("%#.10x", 1024);  // printf and vprintf behave differently on this one
+	test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
 
 	// // defined UB
 	// test("abc%");  // printf and vprintf behave differently on this one

@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:25 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/07 10:39:39 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 11:12:28 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ enum e_ft_printf_length_modifier
 
 typedef struct s_ft_printf_format
 {
-	int									flags;
+	unsigned int						flags;
 	unsigned int						min_width;
 	int									precision;
 	int									format_incorrect;
