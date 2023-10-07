@@ -6,11 +6,12 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 01:09:57 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 01:17:34 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/06 15:52:33 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include "ft_printf.h"
@@ -52,6 +53,7 @@ static void	simple_tests_id(void)
 	test("%d", 0);
 	test("%d", INT_MAX);
 	test("%d", INT_MIN);
+
 	test("%i", 123);
 	test("%i", -123);
 	test("%i", 0);
@@ -59,7 +61,7 @@ static void	simple_tests_id(void)
 	test("%i", INT_MIN);
 }
 
-static void	simple_tests_uxo(void)
+static void	simple_tests_uo(void)
 {
 	test("%u", 123);
 	test("%u", -123);
@@ -68,6 +70,16 @@ static void	simple_tests_uxo(void)
 	test("%u", INT_MIN);
 	test("%u", UINT_MAX);
 
+	test("%o", 123);
+	test("%o", -123);
+	test("%o", 0);
+	test("%o", INT_MAX);
+	test("%o", INT_MIN);
+	test("%o", UINT_MAX);
+}
+
+static void	simple_tests_x(void)
+{
 	test("%x", 123);
 	test("%x", -123);
 	test("%x", 0);
@@ -81,28 +93,26 @@ static void	simple_tests_uxo(void)
 	test("%X", INT_MAX);
 	test("%X", INT_MIN);
 	test("%X", UINT_MAX);
-
-	test("%o", 123);
-	test("%o", -123);
-	test("%o", 0);
-	test("%o", INT_MAX);
-	test("%o", INT_MIN);
-	test("%o", UINT_MAX);
 }
 
 int	main(void)
 {
-	simple_tests_scp();
-	simple_tests_id();
-	simple_tests_uxo();
+	// simple_tests_scp();
+	// simple_tests_id();
+	// simple_tests_uxo();
 
-	test("%.10x", 1024);  // printf and vprintf behave differently on this one
-	test("%#.10x", 1024);  // printf and vprintf behave differently on this one
-	test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
+	//test("%hhu", 513);
 
-	// defined UB
-	test("abc%");  // printf and vprintf behave differently on this one
-	// %p apparently works with '+' and ' ' flags, but not with '#', probably impl-defined
+	printf("abc%");
+	ft_printf("abc%");
+
+	// test("%.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%#.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
+
+	// // defined UB
+	// test("abc%");  // printf and vprintf behave differently on this one
+	// // %p apparently works with '+' and ' ' flags, but not with '#', probably impl-defined
 
 
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:33 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 12:36:35 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:49 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	parse_min_width(
 		variadic_min_width = va_arg(ap, int);
 		if (variadic_min_width < 0)
 		{
-			f_descr->flags |= FT_F_MINUS;
+			f_descr->flags |= FT_PRINTF_MINUS;
 			if (variadic_min_width == INT_MIN)
 				f_descr->min_width = (unsigned)INT_MAX + 1;
 			else
@@ -39,7 +39,7 @@ void	parse_min_width(
 	else
 		f_descr->min_width = ft_atoi_shift(format);
 	if (f_descr->min_width)
-		f_descr->flags |= FT_F_MIN_WIDTH;
+		f_descr->flags |= FT_PRINTF_MIN_WIDTH;
 }
 
 //	F_ZERO:		For integers
@@ -69,10 +69,10 @@ void	parse_flags(const char **format, t_ft_printf_format *f_descr)
 		*format += 1;
 		next = ft_strchr_no_eol(flags_string, **format);
 	}
-	if ((f_descr->flags & FT_F_ZERO) && (f_descr->flags & FT_F_MINUS))
-		f_descr->flags &= ~FT_F_ZERO;
-	if ((f_descr->flags & FT_F_SPACE) && (f_descr->flags & FT_F_PLUS))
-		f_descr->flags &= ~FT_F_SPACE;
+	if ((f_descr->flags & FT_PRINTF_ZERO) && (f_descr->flags & FT_PRINTF_MINUS))
+		f_descr->flags &= ~FT_PRINTF_ZERO;
+	if ((f_descr->flags & FT_PRINTF_SPACE) && (f_descr->flags & FT_PRINTF_PLUS))
+		f_descr->flags &= ~FT_PRINTF_SPACE;
 }
 
 // Minus not allowed after '.' even for floating point nums
@@ -99,31 +99,31 @@ void	parse_precision(
 		variadic_precision = ft_atoi_shift(format);
 	if (variadic_precision < 0)
 	{
-		f_descr->flags &= ~FT_F_PRESISION;
+		f_descr->flags &= ~FT_PRINTF_PRESISION;
 		return ;
 	}
-	f_descr->flags |= FT_F_PRESISION;
+	f_descr->flags |= FT_PRINTF_PRESISION;
 	f_descr->precision = variadic_precision;
 }
 
 void	parse_lenghth_modifier(const char **format, t_ft_printf_format *f_descr)
 {
 	if (ft_strncmp(*format, "hh", 2) == 0)
-		f_descr->length_modifier = FT_L_hh;
+		f_descr->length_modifier = FT_PRINTF_hh;
 	else if (ft_strncmp(*format, "ll", 2) == 0)
-		f_descr->length_modifier = FT_L_ll;
+		f_descr->length_modifier = FT_PRINTF_ll;
 	else if (ft_strncmp(*format, "h", 1) == 0)
-		f_descr->length_modifier = FT_L_h;
+		f_descr->length_modifier = FT_PRINTF_h;
 	else if (ft_strncmp(*format, "l", 1) == 0)
-		f_descr->length_modifier = FT_L_l;
+		f_descr->length_modifier = FT_PRINTF_l;
 	else if (ft_strncmp(*format, "z", 1) == 0)
-		f_descr->length_modifier = FT_L_z;
+		f_descr->length_modifier = FT_PRINTF_z;
 	else if (ft_strncmp(*format, "j", 1) == 0)
-		f_descr->length_modifier = FT_L_j;
+		f_descr->length_modifier = FT_PRINTF_j;
 	else if (ft_strncmp(*format, "t", 1) == 0)
-		f_descr->length_modifier = FT_L_t;
+		f_descr->length_modifier = FT_PRINTF_t;
 	else if (ft_strncmp(*format, "L", 1) == 0)
-		f_descr->length_modifier = FT_L_L;
+		f_descr->length_modifier = FT_PRINTF_L;
 	if (ft_strncmp(*format, "hh", 2) == 0 || ft_strncmp(*format, "ll", 2) == 0)
 		*format += 2;
 	if (ft_strchr_no_eol("hlzjtL", **format))

@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 00:25:41 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 00:26:17 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:49 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,11 @@ void	write_unb_in_order(
 		-= ((f_descr->precision > nb_descr->nb_len) * f_descr->precision
 			+ (f_descr->precision <= nb_descr->nb_len) * nb_descr->nb_len);
 	order_opts.padding *= (order_opts.padding > 0);
-	if (f_descr->flags & FT_F_MINUS)
+	if (f_descr->flags & FT_PRINTF_MINUS)
 		write_left_adjusted_odred(fd, nb_descr, &order_opts);
 	else
 	{
-		if (f_descr->flags & FT_F_ZERO)
+		if (f_descr->flags & FT_PRINTF_ZERO)
 			write_right_adjusted_with_zeros(fd, nb_descr, &order_opts);
 		else
 			write_right_adjusted_with_spaces(fd, nb_descr, &order_opts);

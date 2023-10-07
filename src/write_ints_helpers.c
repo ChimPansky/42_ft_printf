@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 12:09:17 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 12:33:38 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:58 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,39 @@
 
 intmax_t	get_signed(enum e_ft_printf_length_modifier len, va_list ap)
 {
-	if (len == FT_L_h)
+	if (len == FT_PRINTF_h)
 		return ((short)va_arg(ap, int));
-	if (len == FT_L_hh)
+	if (len == FT_PRINTF_hh)
 		return ((char)va_arg(ap, int));
-	if (len == FT_L_l)
+	if (len == FT_PRINTF_l)
 		return (va_arg(ap, long));
-	if (len == FT_L_ll)
+	if (len == FT_PRINTF_ll)
 		return (va_arg(ap, long long));
-	if (len == FT_L_z)
-		return (va_arg(ap, size_t));
-	if (len == FT_L_j)
+	if (len == FT_PRINTF_z)
+		return (va_arg(ap, ssize_t));
+	if (len == FT_PRINTF_j)
 		return (va_arg(ap, intmax_t));
-	if (len == FT_L_t)
+	if (len == FT_PRINTF_t)
 		return (va_arg(ap, ptrdiff_t));
 	return (va_arg(ap, int));
 }
 
-// if (len == FT_L_NULL)
+// if (len == FT_PRINTF_NULL)
 uintmax_t	get_unsigned(enum e_ft_printf_length_modifier len, va_list ap)
 {
-	if (len == FT_L_h)
+	if (len == FT_PRINTF_h)
 		return ((unsigned short)va_arg(ap, unsigned int));
-	if (len == FT_L_hh)
+	if (len == FT_PRINTF_hh)
 		return ((unsigned char)va_arg(ap, unsigned int));
-	if (len == FT_L_l)
+	if (len == FT_PRINTF_l)
 		return ((unsigned long)va_arg(ap, unsigned long));
-	if (len == FT_L_ll)
+	if (len == FT_PRINTF_ll)
 		return ((unsigned long long)va_arg(ap, unsigned long long));
-	if (len == FT_L_z)
+	if (len == FT_PRINTF_z)
 		return ((size_t)va_arg(ap, size_t));
-	if (len == FT_L_j)
+	if (len == FT_PRINTF_j)
 		return (va_arg(ap, uintmax_t));
-	if (len == FT_L_t)
+	if (len == FT_PRINTF_t)
 		return (va_arg(ap, ptrdiff_t));
 	return ((unsigned)va_arg(ap, unsigned));
 }

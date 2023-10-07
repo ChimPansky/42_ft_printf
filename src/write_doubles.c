@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 12:10:37 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 12:37:19 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:58 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
 long double	get_double(enum e_ft_printf_length_modifier len, va_list ap)
 {
-	if (len == FT_L_L)
+	if (len == FT_PRINTF_L)
 		return (va_arg(ap, long double));
 	return (va_arg(ap, double));
 }

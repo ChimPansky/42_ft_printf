@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:29 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/03 23:12:00 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:58 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	write_next(int fd, const char **format, va_list ap)
 	t_ft_printf_format	f_descr;
 
 	f_descr.flags = 0;
-	f_descr.length_modifier = FT_L_NULL;
+	f_descr.length_modifier = FT_PRINTF_NULL;
 	f_descr.format_incorrect = 0;
 	if (percent > *format)
 		accumulate_size(write(fd, *format, percent - *format));

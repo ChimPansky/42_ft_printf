@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:25 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 12:37:02 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:39:39 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,19 @@
 # define FT_PRINTF_AS_GET_SIZE -2
 # define FT_PRINTF_WRITE_ERROR -1
 
-# define FT_PRINTF_BUFFER_SIZE 1024
+# define FT_PRINTF_BUFFER_SIZE 64
 
 # define FT_PRINTF_FLAGS_STRING "#0- +"
 
 enum e_ft_printf_flags
 {
-	FT_F_HASH = 1,
-	FT_F_ZERO = 2,
-	FT_F_MINUS = 4,
-	FT_F_SPACE = 8,
-	FT_F_PLUS = 16,
-	FT_F_PRESISION = 32,
-	FT_F_MIN_WIDTH = 64,
+	FT_PRINTF_HASH		= 1 << 0,
+	FT_PRINTF_ZERO		= 1 << 1,
+	FT_PRINTF_MINUS		= 1 << 2,
+	FT_PRINTF_SPACE		= 1 << 3,
+	FT_PRINTF_PLUS		= 1 << 4,
+	FT_PRINTF_PRESISION	= 1 << 5,
+	FT_PRINTF_MIN_WIDTH	= 1 << 6,
 };
 
 // default size for integer tipes is int
@@ -51,15 +51,15 @@ enum e_ft_printf_flags
 // L	Floating-point types, expects a long double argument.
 enum e_ft_printf_length_modifier
 {
-	FT_L_NULL = 0,
-	FT_L_h,
-	FT_L_hh,
-	FT_L_l,
-	FT_L_ll,
-	FT_L_z,
-	FT_L_j,
-	FT_L_t,
-	FT_L_L,
+	FT_PRINTF_NULL = 0,
+	FT_PRINTF_h,
+	FT_PRINTF_hh,
+	FT_PRINTF_l,
+	FT_PRINTF_ll,
+	FT_PRINTF_z,
+	FT_PRINTF_j,
+	FT_PRINTF_t,
+	FT_PRINTF_L,
 };
 
 typedef struct s_ft_printf_format

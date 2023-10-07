@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:44 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 01:22:48 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 10:36:49 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	write_signed(int fd, t_ft_printf_format *f_descr, intmax_t nb)
 {
 	t_ft_printf_nb_description	nb_descr;
 
-	if (!(f_descr->flags & FT_F_PRESISION))
+	if (!(f_descr->flags & FT_PRINTF_PRESISION))
 		f_descr->precision = 1;
 	else
-		f_descr->flags &= ~FT_F_ZERO;
+		f_descr->flags &= ~FT_PRINTF_ZERO;
 	nb_descr.prefix = "";
 	fill_base(&nb_descr, f_descr->conversion);
 	if (INTMAX_MIN == nb)
@@ -61,9 +61,9 @@ void	write_signed(int fd, t_ft_printf_format *f_descr, intmax_t nb)
 			nb_descr.nb, nb_descr.base_len, f_descr->precision);
 	if (nb < 0)
 		nb_descr.prefix = "-";
-	else if (nb && (f_descr->flags & FT_F_PLUS))
+	else if (nb && (f_descr->flags & FT_PRINTF_PLUS))
 		nb_descr.prefix = "+";
-	else if (nb && (f_descr->flags & FT_F_SPACE))
+	else if (nb && (f_descr->flags & FT_PRINTF_SPACE))
 		nb_descr.prefix = " ";
 	write_unb_in_order(fd, &nb_descr, f_descr);
 }
@@ -78,16 +78,16 @@ void	write_unsigned(int fd, t_ft_printf_format *f_descr, uintmax_t nb)
 {
 	t_ft_printf_nb_description	nb_descr;
 
-	if (!(f_descr->flags & FT_F_PRESISION))
+	if (!(f_descr->flags & FT_PRINTF_PRESISION))
 		f_descr->precision = 1;
 	else
-		f_descr->flags &= ~FT_F_ZERO;
+		f_descr->flags &= ~FT_PRINTF_ZERO;
 	nb_descr.prefix = "";
 	fill_base(&nb_descr, f_descr->conversion);
 	nb_descr.nb = nb;
 	nb_descr.nb_len = count_unb_len(
 			nb_descr.nb, nb_descr.base_len, f_descr->precision);
-	if (nb && (f_descr->flags & FT_F_HASH))
+	if (nb && (f_descr->flags & FT_PRINTF_HASH))
 		nb_descr.prefix = nb_descr.hash;
 	write_unb_in_order(fd, &nb_descr, f_descr);
 }
