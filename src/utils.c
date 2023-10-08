@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 23:01:37 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/04 12:43:17 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 15:15:01 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,12 @@ int	accumulate_size(ssize_t bytes_written)
 	else if (bytes_written == FT_PRINTF_AS_GET_SIZE)
 		return (ret);
 	else if (sz >= 0)
-		sz += bytes_written;
+	{
+		if ((ssize_t)INT_MAX - sz - bytes_written < 0)
+			sz = FT_PRINTF_WRITE_ERROR;
+		else
+			sz += bytes_written;
+	}
 	return (sz);
 }
 

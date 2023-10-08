@@ -6,7 +6,7 @@
 /*   By: vvilensk <vilenskii.v@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 01:09:57 by vvilensk          #+#    #+#             */
-/*   Updated: 2023/10/07 11:57:40 by vvilensk         ###   ########.fr       */
+/*   Updated: 2023/10/07 13:12:22 by vvilensk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ static void	simple_tests_x(void)
 	test("%X", UINT_MAX);
 }
 
+#include <fcntl.h>
 int	main(void)
 {
 	// simple_tests_scp();
@@ -103,12 +104,16 @@ int	main(void)
 
 	//test("%hhu", 513);
 
-	// printf("abc%");
-	// ft_printf("abc%");
+	int fdnull = open("/dev/null", O_WRONLY);
+	FILE* fl_null = fopen("/dev/null", "w");
 
-	test("%.10x", 1024);  // printf and vprintf behave differently on this one
-	test("%#.10x", 1024);  // printf and vprintf behave differently on this one
-	test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
+	int a = printf("%2147483649d", 1);
+	int b = ft_printf_fd(1, "%2147483649d", 1);
+	printf("%d\n%d", a, b);
+
+	// test("%.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%#.10x", 1024);  // printf and vprintf behave differently on this one
+	// test("%#20.10x", 1024);  // printf and vprintf behave differently on this one
 
 	// // defined UB
 	// test("abc%");  // printf and vprintf behave differently on this one
