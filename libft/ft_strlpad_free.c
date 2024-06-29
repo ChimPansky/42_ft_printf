@@ -1,29 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strlpad_free.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/03 10:07:43 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/04 20:01:50 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/*	Left Pad a String <s> with a character <cpad> to reach a certain
+	size <target_size> and afterwards free the original string*/
+char	*ft_strlpad_free(char *s, char cpad, size_t target_size, int to_free)
 {
 	char	*result;
-	size_t	total_len;
 
-	if (!s1 || !s2)
-		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
+	result = ft_strlpad((const char *)s, cpad, target_size);
 	if (!result)
 		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
+	if (to_free)
+		free(s);
 	return (result);
 }

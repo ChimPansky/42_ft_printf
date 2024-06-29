@@ -10,7 +10,6 @@
 *.png
 *.so
 *.a
-test_main.c
 
 # Prerequisites
 *.d

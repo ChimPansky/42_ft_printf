@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_get_int_order_base.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/03 00:19:37 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/03 00:20:06 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+size_t	ft_get_int_order_base(size_t nb, size_t base_len)
 {
-	char	*result;
-	size_t	total_len;
+	size_t	ord;
 
-	if (!s1 || !s2)
-		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
-	if (!result)
-		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
-	return (result);
+	ord = 1;
+	while (nb / base_len != 0)
+	{
+		ord++;
+		nb /= base_len;
+	}
+	return (ord);
 }

@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/05 13:13:44 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/05 14:08:07 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*add_prefix(char *s, char *pre)
 {
 	char	*result;
-	size_t	total_len;
 
-	if (!s1 || !s2)
-		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
+	result = ft_strjoin_free(pre, s, 2);
 	if (!result)
-		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
+		return (s);
+	return (result);
+}
+
+char	*pad_negative(char *s, char cpad, size_t width, int to_free)
+{
+	char	*result;
+
+	result = s;
+	*result = '0';
+	result = ft_strlpad_free(result, cpad, width, to_free);
+	if (result)
+		*result = '-';
 	return (result);
 }

@@ -1,29 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin_free.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/04 19:03:33 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/04 20:05:51 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin_free(char *s1, char *s2, int to_free)
 {
 	char	*result;
-	size_t	total_len;
 
-	if (!s1 || !s2)
-		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
+	result = ft_strjoin((const char *)s1, (const char *)s2);
 	if (!result)
 		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
+	if (to_free & 1)
+		free(s1);
+	if (to_free & 2)
+		free(s2);
 	return (result);
 }

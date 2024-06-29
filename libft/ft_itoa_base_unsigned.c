@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_itoa_base_unsigned.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/03 00:21:06 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/03 00:31:44 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_itoa_base_unsigned(size_t n, char *base)
 {
-	char	*result;
-	size_t	total_len;
+	char	*str;
+	size_t	base_len;
+	size_t	len;
 
-	if (!s1 || !s2)
+	base_len = ft_strlen(base);
+	len = ft_get_int_order_base(n, base_len);
+	str = ft_calloc(sizeof(char), len + 1);
+	if (!str)
 		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
-	if (!result)
-		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
-	return (result);
+	str[len] = '\0';
+	while (len--)
+	{
+		str[len] = base[n % base_len];
+		n /= base_len;
+	}
+	return (str);
 }

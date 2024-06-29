@@ -1,29 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_itoa_base_signed.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkasbari <thomas.kasbarian@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/05 13:48:06 by tkasbari          #+#    #+#             */
-/*   Updated: 2023/10/04 19:15:28 by tkasbari         ###   ########.fr       */
+/*   Created: 2023/10/02 23:09:49 by tkasbari          #+#    #+#             */
+/*   Updated: 2023/10/03 00:20:59 by tkasbari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_itoa_base_signed(int n, char *base)
 {
+	char	*pos_conversion;
 	char	*result;
-	size_t	total_len;
+	int		neg;
+	long	nb;
 
-	if (!s1 || !s2)
-		return (NULL);
-	total_len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	result = (char *)ft_calloc(sizeof(char), total_len);
+	neg = 0;
+	nb = (long)n;
+	if (nb < 0)
+	{
+		neg = 1;
+		nb *= -1;
+	}
+	pos_conversion = ft_itoa_base_unsigned(nb, base);
+	if (!neg)
+		return (pos_conversion);
+	result = ft_strjoin("-", pos_conversion);
+	free(pos_conversion);
 	if (!result)
 		return (NULL);
-	ft_strlcat(result, s1, total_len);
-	ft_strlcat(result, s2, total_len);
 	return (result);
 }
